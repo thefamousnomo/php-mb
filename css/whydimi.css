@@ -1,0 +1,20 @@
+	.head{
+	float: right;
+	}
+    .aSpinEdit{
+    width: 60px;
+    }
+    //input.dead{
+    //color: grey;
+    //}
+    //input.alive{
+    //color: initial;
+    //}
+    span.labelwarning{
+    visibility: hidden;
+    }
+    .form-control-inline {
+    min-width: 0;
+    width: auto;
+    display: inline;
+    }
