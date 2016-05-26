@@ -9,13 +9,13 @@ $basket_qty = @count($_SESSION['order_items']);
   <title>Myles Bros Ltd</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link href="css/bootstrap-tour.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/search/css/bootstrap.min.css">
+  <link href="/search/css/bootstrap-tour.min.css" rel="stylesheet">
   <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/bootstrap-tour.min.js"></script>
+  <script src="/search/js/bootstrap.min.js"></script>
+  <script src="/search/js/bootstrap-tour.min.js"></script>
 <style>
 // * { border: 1px solid black; }
 .jumbotron { 
@@ -116,7 +116,7 @@ var tour = new Tour({
 		$("#filter").text(this.text).data("field", $(this).data("field"));
 	});
 	function ajaxSend(ele, act, flag) {
-		 $.get( "engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val() } ).done(function( data ) {
+		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val() } ).done(function( data ) {
     		if ( flag == 1 ) {
     			$( "#resultsDiv" ).html( data );
     		} else {
@@ -218,15 +218,15 @@ $("#searchButton").removeClass('btn-warning');
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
 <div style="float: left;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a></div>
 <div id="resultsDiv" style="clear: both; padding-top: 1px; width: 100%;">
-<div style="float: right;"><img width="250" src="ht.jpg" class="img-responsive"></div>
+<div style="float: right;"><img width="250" src="/search/ht.jpg" class="img-responsive"></div>
 <h3>Welcome To Myles Brothers Ltd</h3>
 <br><p>We are a 3rd generation family run wholesale hardware business with a firm focus on service.</p><p>Please click <a href="#" id="help">here</a> for a quick instructional tour of our ordering system.</p>
-<br><br><img width="250" src="brooms-857508_1280.jpg" class="img-circle img-responsive">
+<br><br><img width="250" src="/search/brooms-857508_1280.jpg" class="img-circle img-responsive">
 </div>
 </div><br>
 <hr style="clear: both;">
 <div class="container">
-<div class="row col-sm-8 col-sm-offset-2 col-md-12 col-md-offset-0">
+<div class="row">
 		<div class="col-xs-6">
 		<div>Contact</div><br>
 		<span class="glyphicon glyphicon-envelope"></span> Sandy Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Peter Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Linsey McGill - Accounts<br><br>
