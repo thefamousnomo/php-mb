@@ -35,7 +35,7 @@ $file = fopen("pricelist.dat", "r");
 function searchQuery($haystack, $needle) {
 	global $results, $g;
 	array_walk($needle, function(&$value, &$key){
-	$value = (strlen($value)>3) ? '/('.rtrim(str_replace('/', '\/', $value), 'S').')(S*)/' : '/('.str_replace('/', '\/', $value).')/';
+	$value = (strlen($value)>3) ? '/('.rtrim($value, 'S').')(S*)/' : '/('.$value.')/';
 	});
 	preg_replace($needle, '$1$2', $haystack[$g], 1, $count);
 	if ( $count > 0 && $count == count($needle) && $_GET['aon'] == 1 ) {
@@ -53,6 +53,16 @@ $q = array_filter($q, function($value){
 	if ( strlen($value) < 3 ) $ltt[] = $value;
 	return ($value&&strlen($value)>2);
 });
+
+/* --- restricted characters block */
+array_walk($q, function(&$value){
+$restrictedChars=array('/', '*');
+foreach ($restrictedChars as $char) {
+$replacementChars[]='\\'.$char;
+}
+$value = str_replace($restrictedChars, $replacementChars, $value);
+});
+/* --- restricted characters block ends */
 
 while ( ! feof($file) ) {
 	$line = fgetcsv($file);
