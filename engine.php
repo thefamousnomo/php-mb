@@ -91,6 +91,8 @@ return $a[2] > $b[2];
 echo removedTerms($ltt);
 echo arrayReturn($results, 'Search Results', count($q));
 
+fclose($file);
+
 }
 /* --- search block ends */
 
@@ -143,19 +145,30 @@ if ( $_GET['action'] == '_destroy' ) {
 
 /* --- order block begins */
 if ( $_GET['action'] == '_order' ) {
+$file = fopen("pricelist.dat", "r");
+while ( ! feof($file) ) {
+	$line = fgetcsv($file);
+	$list[$line[2]]=$line[3];
+}
+fclose($file);
 	//ini_set('SMTP','192.168.0.21');
 	//ini_set('sendmail_from','despatch@prestigeleisure.com');
 	//ini_set('smtp_port',25);
-	$debug[] = @$_SERVER['REQUEST_TIME'];
-	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
-	$debug[] = @$_SERVER['REMOTE_ADDR'];
-	$debug[] = @$_SERVER['REMOTE_HOST'];
-	$email = "----- debug block -----\r\n";
-	$email .= print_r($debug, true);
-	$email .= "----- customer details -----\r\n";
-	$email .= print_r($_GET, true);
-	$email .= "----- order items -----\r\n";
-	$email .= print_r($_SESSION['order_items'], true);
+	//$debug[] = @$_SERVER['REQUEST_TIME'];
+	//$debug[] = @$_SERVER['HTTP_USER_AGENT'];
+	//$debug[] = @$_SERVER['REMOTE_ADDR'];
+	//$debug[] = @$_SERVER['REMOTE_HOST'];
+	//$email = "----- debug block -----\r\n";
+	//$email .= print_r($debug, true);
+	//$email .= "----- customer details -----\r\n";
+	//$email .= print_r($_GET, true);
+	//$email .= "----- order items -----\r\n";
+	//$email .= print_r($_SESSION['order_items'], true);
+	$email = 'Name: ' . $_GET['customer']."\r\n";
+	$email .= 'Name: ' . $_GET['email']."\r\n\r\n";	
+	foreach ( $_SESSION['order_items'] as $key => $value ) {
+	$email .= $key.' - '.$list[$key]." x $value\r\n";
+	}
 	if ( mail('orders@mylesbros.co.uk', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
 		unset($_SESSION['order_items']);
 		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3>'));
