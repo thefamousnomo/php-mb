@@ -9,8 +9,8 @@ $basket_qty = @count($_SESSION['order_items']);
   <title>Myles Bros Ltd</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="search/css/bootstrap.min.css">
-  <link href="search/css/bootstrap-tour.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/search/css/bootstrap.min.css">
+  <link href="/search/css/bootstrap-tour.min.css" rel="stylesheet">
   <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -47,6 +47,9 @@ color: #3498db;
 .jumbosmallmargin{
 margin-bottom: 20px;
 }
+#logger *{
+margin-top: 10px; 
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -63,7 +66,7 @@ var tour = new Tour({
   {
     element: ".input-group-btn",
     title: "Filter",
-    content: "You can filter your results, or search for special offers"
+    content: "You can filter your results."
   },
   {
     element: "#searchButton",
@@ -122,7 +125,7 @@ var tour = new Tour({
 	$("#searchText").select();
 	});
 	function ajaxSend(ele, act, flag) {
-		 $.get( "search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val() } ).done(function( data ) {
+		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val() } ).done(function( data ) {
     		if ( flag == 1 ) {
     			$( "#resultsDiv" ).html( data );
     		} else {
@@ -142,7 +145,7 @@ var tour = new Tour({
     });
     $("#login").click(function(e){
     	e.preventDefault();
-    	alert('log-ins will be implemented soon!');
+    	$("#logger").slideToggle("slow");
     });
     $('#resultsDiv').on('click', '.toAdd', function(){
     	var prod = $(this).attr('id');
@@ -190,6 +193,12 @@ var tour = new Tour({
       tour.start(true);
     }
     });
+    $("#verify").click(function(){
+    $.post( "/search/l.php", {u: $("#ver-u").val(), p: $("#ver-p").val()} ).done(function(data){
+    alert(data);
+    location.reload();
+    });
+    });
 });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
@@ -222,12 +231,20 @@ $("#searchButton").removeClass('btn-warning');
 </div>
 <div class="container">
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
-<div style="float: left;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a></div>
+<div style="float: left;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a><h4><?php echo @$_SESSION['logged_in']['NAME'];?></h4>
+<div class="input-group">
+<div id="logger" style="display: none;">
+<input type="text" id="ver-u" placeholder="username">
+<input type="password" id="ver-p" placeholder="password">
+<a href="#" id="verify"><span class="badge" style="background-color: #3498db;">Log in</span></a>
+</div>
+</div>
+</div>
 <div id="resultsDiv" style="clear: both; padding-top: 1px; width: 100%;">
-<div style="float: right;"><img width="250" src="search/ht.jpg" class="img-responsive"></div>
+<div style="float: right;"><img width="250" src="/search/ht.jpg" alt="barrow" class="img-responsive"></div>
 <h3>Welcome To Myles Brothers Ltd</h3>
 <br><p>We are a 3rd generation family run wholesale hardware business with a firm focus on service.</p><p>Please click <a href="#" id="help">here</a> for a quick instructional tour of our ordering system.</p>
-<br><br><img width="250" src="search/brooms-857508_1280.jpg" class="img-circle img-responsive">
+<br><br><img width="250" src="/search/brooms-857508_1280.jpg" alt="brooms" class="img-circle img-responsive">
 </div>
 </div><br>
 <hr style="clear: both;">
@@ -246,5 +263,8 @@ $("#searchButton").removeClass('btn-warning');
 </div>
 </div>
 <hr style="clear: both;">
+<?php
+//print_r($_SESSION);
+?>
 </body>
 </html>

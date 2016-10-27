@@ -9,13 +9,13 @@ $basket_qty = @count($_SESSION['order_items']);
   <title>Myles Bros Ltd</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link href="css/bootstrap-tour.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/search/css/bootstrap.min.css">
+  <link href="/search/css/bootstrap-tour.min.css" rel="stylesheet">
   <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/bootstrap-tour.min.js"></script>
+  <script src="search/js/bootstrap.min.js"></script>
+  <script src="search/js/bootstrap-tour.min.js"></script>
 <style>
 // * { border: 1px solid black; }
 .jumbotron { 
@@ -46,6 +46,15 @@ color: #3498db;
 }
 .jumbosmallmargin{
 margin-bottom: 20px;
+}
+#logger {
+width: 30%;
+}
+#logger *{
+//margin-top: 10px;
+}
+.glyphfav {
+font-size:1.2em;
 }
 </style>
 <script type="text/javascript">
@@ -122,13 +131,17 @@ var tour = new Tour({
 	$("#searchText").select();
 	});
 	function ajaxSend(ele, act, flag) {
-		 $.get( "engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val() } ).done(function( data ) {
+		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')) } ).done(function( data ) {
     		if ( flag == 1 ) {
     			$( "#resultsDiv" ).html( data );
-    		} else {
+    		} else if ( flag == 0 ) {
     			obj = JSON.parse(data);
     			$("#basket_qty").html(obj.count);
     			if ( obj.message ) $( "#resultsDiv" ).html(obj.message);
+    		}
+    		if ( act == '_fav' ) {
+    		$(ele).toggleClass('glyphicon-star glyphicon-star-empty');
+    		if ( data != 1 ) alert('oops, there looks to be something wrong with the favourite engine... please let use know!');
     		}
     	});
 	}
@@ -142,7 +155,7 @@ var tour = new Tour({
     });
     $("#login").click(function(e){
     	e.preventDefault();
-    	alert('log-ins will be implemented soon!');
+    	$("#logger").slideToggle("slow");
     });
     $('#resultsDiv').on('click', '.toAdd', function(){
     	var prod = $(this).attr('id');
@@ -182,6 +195,14 @@ var tour = new Tour({
     	ajaxSend($(this), '_order', 0);
     }
     });
+    $('#resultsDiv').on('click', '.glyphfav', function(){
+    console.log($(this).attr('id'));
+    ajaxSend($(this), '_fav', 2);
+    });
+    $('#acc_fav').click(function(e){
+    e.preventDefault();
+    ajaxSend($(this), '_favlist', 1);
+    });
     $('#help').click(function(){
     if ( tour ) {
       tour.restart();
@@ -189,6 +210,12 @@ var tour = new Tour({
       tour.init(true);
       tour.start(true);
     }
+    });
+    $("#verify").click(function(){
+    $.post( "/search/l.php", {u: $("#ver-u").val(), p: $("#ver-p").val()} ).done(function(data){
+    alert(data);
+    location.reload();
+    });
     });
 });
 $(document).ajaxStop(function () {
@@ -222,13 +249,30 @@ $("#searchButton").removeClass('btn-warning');
 </div>
 <div class="container">
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
-<div style="float: left;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a></div>
+<div style="float: left; width: 100%;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a><h4><?php echo @$_SESSION['logged_in']['NAME'];?></h4>
+<div style="width: 100%;">
+<div id="logger" style="display: none;">
+<input type="text" class="form-control" id="ver-u" placeholder="username">
+<input style="margin-top: 10px;" type="password" class="form-control" id="ver-p" placeholder="password">
+<a href="#" id="verify"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log in</span></a>
+</div>
+</div>
+</div>
 <div id="resultsDiv" style="clear: both; padding-top: 1px; width: 100%;">
-<div style="float: right;"><img width="250" src="ht.jpg" class="img-responsive"></div>
+<?php
+if (! is_array(@$_SESSION['logged_in']) ) {
+echo <<<WELCOME
+<div style="float: right;"><img width="250" src="/search/ht.jpg" alt="barrow" class="img-responsive"></div>
 <h3>Welcome To Myles Brothers Ltd</h3>
 <br><p>We are a 3rd generation family run wholesale hardware business with a firm focus on service.</p><p>Please click <a href="#" id="help">here</a> for a quick instructional tour of our ordering system.</p>
-<br><br><img width="250" src="brooms-857508_1280.jpg" class="img-circle img-responsive">
+<br><br><img width="250" src="/search/brooms-857508_1280.jpg" alt="brooms" class="img-circle img-responsive">
 </div>
+WELCOME;
+} else {
+echo '<p>MY ACCOUNT</p>';
+echo 'Click <a id="acc_fav" href="#">here</a> to list your favourite products.';
+}
+?>
 </div><br>
 <hr style="clear: both;">
 <div class="container">
@@ -246,5 +290,8 @@ $("#searchButton").removeClass('btn-warning');
 </div>
 </div>
 <hr style="clear: both;">
+<?php
+//print_r($_SESSION);
+?>
 </body>
 </html>
