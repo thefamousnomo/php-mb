@@ -19,7 +19,13 @@ return ( @mysqli_num_rows($result) > 0 ) ? 'glyphicon-star' : 'glyphicon-star-em
 }
 /* --- return favourite function ends */
 
-//session_destroy();
+/* --- log out function */
+if ( $_GET['action'] == '_lo' ) {
+echo 'You are now logged out.';
+unset($_SESSION['logged_in']);
+exit;
+}
+/* --- log out function ends */
 
 /* --- display function */
 function arrayReturn($z, $head, $qCount=1) {

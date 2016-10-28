@@ -33,7 +33,7 @@ if ($conn->connect_error)
 			//ini_set('SMTP','192.168.0.21');
 			//ini_set('sendmail_from','despatch@prestigeleisure.com');
 			//ini_set('smtp_port',25);
-			mail($hash['E_MAIL'], 'Myles Bros Online password reset', 'Hello! Your password is '.$p.', please keep this safe!', "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk');
+			mail($hash['E_MAIL'], 'Myles Bros Online password reset', 'Hello! Your Myles Bros Ltd password is '.$p.', please keep this safe!', "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk');
 			echo "Your password has been emailed to your email address. Please keep this password safe.";
 			exit;
 		}

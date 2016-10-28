@@ -217,6 +217,12 @@ var tour = new Tour({
     location.reload();
     });
     });
+    $("#log-out").click(function(){
+    $.get( "/search/engine.php", { action: '_lo' }).done(function( data ) {
+    alert(data);
+    location.reload();
+    });
+    });
 });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
@@ -249,7 +255,9 @@ $("#searchButton").removeClass('btn-warning');
 </div>
 <div class="container">
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
-<div style="float: left; width: 100%;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a><h4><?php echo @$_SESSION['logged_in']['NAME'];?></h4>
+<div style="float: left; width: 100%;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;
+<?php if (! is_array(@$_SESSION['logged_in']) ) echo '<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a>'; ?>
+<h4><?php echo @$_SESSION['logged_in']['NAME'];?></h4>
 <div style="width: 100%;">
 <div id="logger" style="display: none;">
 <input type="text" class="form-control" id="ver-u" placeholder="username">
@@ -269,8 +277,11 @@ echo <<<WELCOME
 </div>
 WELCOME;
 } else {
-echo '<p>MY ACCOUNT</p>';
-echo 'Click <a id="acc_fav" href="#">here</a> to list your favourite products.';
+echo <<<LOGGED
+<p>MY ACCOUNT</p>
+<p>Click <a id="acc_fav" href="#">here</a> to list your favourite products.</p>
+<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a>
+LOGGED;
 }
 ?>
 </div><br>
