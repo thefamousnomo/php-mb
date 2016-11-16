@@ -194,7 +194,7 @@ echo arrayReturn($results, 'Your Order', 0);
 //echo '<a style="float: right;" href="#" id="refresh">refresh trolley</a>';
 echo '<a href="#" id="refresh" style="float: right;"><span class="badge" style="background-color: #3498db;">refresh trolley</span></a>';
 //echo '<br><br><a style="float: right;" href="#" id="conan">empty trolley</a>';
-echo '<br><br><a href="#" id="conan" style="float: right;"><span class="badge" style="background-color: #3498db;">empty trolley</span></a>';
+echo '<br><br><a href="#" id="conan" style="float: right;"><span class="badge" style="background-color: #c0392b;">empty trolley</span></a>';
 $shopname = @$_SESSION['logged_in']['NAME'];
 $shopemail = @$_SESSION['logged_in']['E_MAIL'];
 echo <<<HIDDENDIV
