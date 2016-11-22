@@ -203,6 +203,10 @@ echo <<<HIDDENDIV
 </tr>
 <tr><td style="text-align: right;">Email Address:&nbsp;&nbsp;</td><td><input id="emailaddress" type="text" class="form-control form-control-inline" name="details[]" value="$shopemail"></td>
 </tr>
+<tr><td style="text-align: right;">Order Number:&nbsp;&nbsp;</td><td><input id="ordernumber" type="text" class="form-control form-control-inline" name="details[]"></td>
+</tr>
+<tr><td style="text-align: right;vertical-align:text-top;">Special Instructions:&nbsp;&nbsp;</td><td><textarea id="specialinstructions" class="form-control form-control-inline" name="details[]" rows="5"></textarea></td>
+</tr>
 <tr><td colspan="2" style="text-align: right;"><br><button class="btn btn-success" id="orderSubmit">Submit Order</button></td>
 </tr></table>
 HIDDENDIV;
@@ -241,7 +245,10 @@ fclose($file);
 	//$email .= "----- order items -----\r\n";
 	//$email .= print_r($_SESSION['order_items'], true);
 	$email = 'Name: ' . $_GET['customer']."\r\n";
-	$email .= 'Name: ' . $_GET['email']."\r\n\r\n";	
+	$email .= 'Email: ' . $_GET['email']."\r\n\r\n";
+	$email .= 'Order Number: ' . $_GET['order_number']."\r\n\r\n";
+	$email .= 'Special Instructions: ' . $_GET['special_instructions']."\r\n\r\n";
+	$email .= "Order details below: \r\n\r\n";
 	foreach ( $_SESSION['order_items'] as $key => $value ) {
 	$email .= $key.' - '.$list[$key]." x $value\r\n";
 	}

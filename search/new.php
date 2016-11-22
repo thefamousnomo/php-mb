@@ -131,7 +131,7 @@ var tour = new Tour({
 	$("#searchText").select();
 	});
 	function ajaxSend(ele, act, flag) {
-		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')) } ).done(function( data ) {
+		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), order_number: $('#ordernumber').val(), special_instructions: $('#specialinstructions').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')) } ).done(function( data ) {
     		if ( flag == 1 ) {
     			$( "#resultsDiv" ).html( data );
     		} else if ( flag == 0 ) {
