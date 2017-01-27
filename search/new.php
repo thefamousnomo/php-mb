@@ -243,7 +243,8 @@ var tour = new Tour({
     location.reload();
     });
     });
-    $(".savedLoad, .savedDelete").click(function(){
+    $(".savedLoad, .savedDelete").click(function(e){
+    e.preventDefault();
     if ( $(this).hasClass('savedLoad') ) {
     console.log('load ' +$(this).data('uuid'));
     ajaxSend(this, '_savedLoad', 0);
@@ -328,7 +329,7 @@ echo '<div class="table-responsive"><table class="table table-hover">
 ';
 if ( @count($_SESSION['saved_orders']) ) {
 foreach ( @$_SESSION['saved_orders'] as $order ) {
-echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="updateOrderNumber" data-uuid="'.$order['uuid'].'">'.$order['ref'].'</td><td>'.$order['order_lines'].'</td><td><span data-ref="'.$order['ref'].'" data-uuid="'.$order['uuid'].'" class="savedLoad glyphicon glyphicon-floppy-open glyphlink"></span></td><td><span data-uuid="'.$order['uuid'].'" class="savedDelete glyphicon glyphicon-floppy-remove glyphlink"></span></td></tr>';
+echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="updateOrderNumber" data-uuid="'.$order['uuid'].'">'.$order['ref'].'</td><td>'.$order['order_lines'].'</td><td><a href="#"><span data-ref="'.$order['ref'].'" data-uuid="'.$order['uuid'].'" class="savedLoad glyphicon glyphicon-floppy-open glyphlink"></span></a></td><td><a href="#"><span data-uuid="'.$order['uuid'].'" class="savedDelete glyphicon glyphicon-floppy-remove glyphlink"></span></a></td></tr>';
 }
 }
 echo '</tbody></table>';
