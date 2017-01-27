@@ -353,9 +353,9 @@ echo '<a href="#" id="log-out"><span class="badge" style="background-color: #349
 </div>
 <hr style="clear: both;">
 <?php
-echo '<pre>';
-print_r($_SESSION);
-echo '</pre>';
+//echo '<pre>';
+//print_r($_SESSION);
+//echo '</pre>';
 ?>
 </body>
 </html>
