@@ -1,21 +1,48 @@
 <?php
 session_start();
+
+/* --- logged in? */
+function loggedIN() {
+return ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 6 );
+}
+/* -- logged in? ends */
+
 /* --- mysql conn obj */
 function mysqlConnObj() {
-$dbc = parse_ini_file("../../c.ini");
-$servername = $dbc['servername'];
-$username = $dbc['username'];
-$password = $dbc['password'];
-$dbname = $dbc['dbname'];
-return mysqli_connect($servername, $username, $password, $dbname);
+if ( loggedIN() ) {
+	$dbc = parse_ini_file("../../c.ini");
+	$servername = $dbc['servername'];
+	$username = $dbc['username'];
+	$password = $dbc['password'];
+	$dbname = $dbc['dbname'];
+	return mysqli_connect($servername, $username, $password, $dbname);
+} else {
+	return false;
+}
+exit;
 }
 /* --- mysql conn obj end */
 
+/* --- saved order to session */
+function savedOrderToSession() {
+unset($_SESSION['saved_orders']);
+$conn = mysqlConnObj();
+$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 0;"; // see also l.php 45
+$result = $conn->query($sql);
+while ($row = mysqli_fetch_assoc($result)) {
+	$_SESSION['saved_orders'][] = $row;
+}
+mysqli_close($conn);
+}
+/* --- save order to session ends */
+
 /* --- return favourite function */
 function favReturn($a, $b) {
-$sql = "SELECT sku FROM favs where account_ref = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and sku = '$b'";
-$result = @mysqli_query($a, $sql);
-return ( @mysqli_num_rows($result) > 0 ) ? 'glyphicon-star' : 'glyphicon-star-empty';
+if ( loggedIN() ) {
+	$sql = "SELECT sku FROM favs where account_ref = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and sku = '$b'";
+	$result = @mysqli_query($a, $sql);
+	return ( @mysqli_num_rows($result) > 0 ) ? 'glyphicon-star' : 'glyphicon-star-empty';
+}
 }
 /* --- return favourite function ends */
 
@@ -23,6 +50,7 @@ return ( @mysqli_num_rows($result) > 0 ) ? 'glyphicon-star' : 'glyphicon-star-em
 if ( $_GET['action'] == '_lo' ) {
 echo 'You are now logged out.';
 unset($_SESSION['logged_in']);
+unset($_SESSION['saved_orders']);
 exit;
 }
 /* --- log out function ends */
@@ -34,11 +62,11 @@ $conn = @mysqlConnObj();
 //
 @$searchMessage = ( $_GET['aon'] == 1 && $qCount > 1 ) ? ' best matches' : ' matches';
 @$searchMessage = ( $head == 'Your Order' ) ? ' items in trolley' : $searchMessage;
-$p = ( is_array(@$_SESSION['logged_in']) ) ? 4 : 5;
-$m = ( is_array(@$_SESSION['logged_in']) ) ? 'Unit Price' : 'RRP';
+$p = ( loggedIN() ) ? 4 : 5;
+$m = ( loggedIN() ) ? 'Unit Price' : 'RRP';
 echo "<h3>$head - ".count($z)."$searchMessage</h3><br>";
 	if ( count($z) > 0 ) {
-		$output = '<table class="table table-striped">
+		$output = '<div class="table-responsive"><table class="table table-striped">
 		<thead>
     		<tr>
     			<th>Product Image</th><th>Product Code</th><th>Description</th><th>Quantity</th><th>'.$m.'</th><th>In Stock</th><th></th>
@@ -50,7 +78,7 @@ echo "<h3>$head - ".count($z)."$searchMessage</h3><br>";
 			$output.= '<tr><td align="center"><img src="http://www.mylesbros.co.uk/search/images/th_'.strtolower($x[2]).'.jpg"></td><td>'.$x[2].'</td><td>'.$x[3].'</td><td><input type="number" class="aSpinEdit form-control form-control-inline" id="spinner-'.$x[2].'" value="'.$ordered_qty.'" min="0" data-sku="'.$x[2].'"></td><td>&pound;'.$x[$p].'</td><td>'.$x[6].'</td>';
 			$output .= ( is_array(@$_SESSION['logged_in']) ) ? '<td><span id="'.$x[2].'" class="glyphicon '.favReturn($conn, $x[2]).' glyphlink glyphfav"></span></td></tr>' : '</tr>';
 		}
-		$output.='</tbody></table>';
+		$output.='</tbody></table></div>';
 		if ( @$_GET['aon'] == 1 && $qCount > 1 ) $output.='<br<br><a href="#" style="float: right;" data-aon="0" id="showAll">show all</a>';
 		return $output;
 	}
@@ -59,7 +87,7 @@ mysqli_close($conn);
 /* --- display function ends */
 
 /* --- favourite block */
-if ( $_GET['action'] == '_fav' ) {
+if ( $_GET['action'] == '_fav' && loggedIN() ) {
 $conn = @mysqlConnObj();
 $sql = ( $_GET['fav'] == 'true' ) ? "INSERT INTO favs (ACCOUNT_REF, SKU) VALUES ('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$_GET['f']."')" : "DELETE FROM favs where ACCOUNT_REF ='".$_SESSION['logged_in']['ACCOUNT_REF']."' AND SKU ='".$_GET['f']."';";
 $result = @mysqli_query($conn, $sql);
@@ -70,8 +98,69 @@ exit;
 }
 /* --- favourite block ends */
 
+/* --- save block */
+if ( $_GET['action'] == '_save' && loggedIN() ) {
+$conn = @mysqlConnObj();
+unset($_SESSION['saved_orders']);
+if ( ! empty($_SESSION['logged_in']['UUID']) ) {
+$uuid = $_SESSION['logged_in']['UUID'];
+$ref = $_SESSION['logged_in']['REF'];
+$sql = "DELETE FROM downstreamHeaders where uuid = '".$uuid."';";
+$result = @mysqli_query($conn, $sql);
+$sql = "DELETE FROM downstreamLines where uuid = '".$uuid."';";
+$result = @mysqli_query($conn, $sql);
+//$_SESSION['logged_in']['UUID'] = '';
+} else {
+$uuid = $_SESSION['logged_in']['ACCOUNT_REF'].date('Ymdhis');
+$ref = $uuid;
+}
+$sql = "INSERT INTO downstreamHeaders (uuid, customer, ref, order_lines) VALUES ('".$uuid."', '".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$ref."', '".count($_SESSION['order_items'])."'); ";
+$resultH = @mysqli_query($conn, $sql);
+$sql = "INSERT INTO downstreamLines (customer, uuid, qty, code) VALUES ";
+$i = 1;
+foreach ( $_SESSION['order_items'] as $k => $v ) {
+$sql .= "('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$uuid."', $v, '".$k."')";
+$sql .= ( $i == count($_SESSION['order_items']) ) ? ';' : ', ';
+$i++;
+}
+$resultL = @mysqli_query($conn, $sql);
+echo ( $resultH && $resultL );
+$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 0;"; // see also l.php 45
+$result = $conn->query($sql);
+while ($row = mysqli_fetch_assoc($result)) {
+$_SESSION['saved_orders'][] = $row;
+}
+mysqli_close($conn);
+unset($_SESSION['order_items']);
+exit;
+}
+/* --- save block ends */
+
+/* --- saved order delete block */
+if ( $_GET['action'] == '_savedDelete' && loggedIN() && !empty($_GET['uuid']) ) {
+$conn = @mysqlConnObj();
+$sql = "DELETE FROM downstreamHeaders where uuid = '".$_GET['uuid']."' and customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."';";
+$result = @mysqli_query($conn, $sql);
+mysqli_close($conn);
+savedOrderToSession();
+exit;
+}
+/* --- saved order delete block ends */
+
+/* --- order ref update block */
+if ( $_GET['action'] == '_orderRef' && loggedIN() && !empty($_GET['uuid']) ) {
+$conn = @mysqlConnObj();
+$sql = "UPDATE downstreamHeaders set ref = '".$_GET['ref']."' where uuid = '".$_GET['uuid']."';";
+$result = @mysqli_query($conn, $sql);
+mysqli_close($conn);
+savedOrderToSession();
+$_SESSION['logged_in']['REF'] = $_GET['ref'];
+exit;
+}
+/* --- order ref update block ends */
+
 /* --- favourite list block */
-if ( $_GET['action'] == '_favlist' ) {
+if ( $_GET['action'] == '_favlist' && loggedIN() ) {
 $conn = @mysqlConnObj();
 $sql = "SELECT sku FROM favs where account_ref = '".$_SESSION['logged_in']['ACCOUNT_REF']."';";
 $result = @mysqli_query($conn, $sql);
@@ -90,6 +179,23 @@ echo arrayReturn($favList, 'Favourites List');
 exit;
 }
 /* --- favourite list block ends */
+
+/* --- saved load block */
+if ( $_GET['action'] == '_savedLoad' && loggedIN() && !empty($_GET['uuid']) ) {
+unset($_SESSION['order_items']);
+$conn = @mysqlConnObj();
+$sql = "SELECT code, qty from downstreamLines where uuid = '".$_GET['uuid']."';";
+$result = @mysqli_query($conn, $sql);
+while ( $row = mysqli_fetch_array($result) ) {
+$_SESSION['order_items'][$row['code']] = $row['qty'];
+}
+$_SESSION['logged_in']['REF'] = $_GET['oref'];
+$_SESSION['logged_in']['UUID'] = $_GET['uuid'];
+mysqli_close($conn);
+echo json_encode(array('count' => count($_SESSION['order_items'])));
+exit;
+}
+/* --- saved load block ends */
 
 /* --- search block */
 if ( $_GET['action'] == '_search' ) {
@@ -191,19 +297,21 @@ while ( ! feof($file) ) {
 	}
 }
 echo arrayReturn($results, 'Your Order', 0);
+if ( loggedIN() ) echo '<a href="#" id="save" style="float: right;"><span class="badge" style="background-color: #5cb85c;">save trolley</span></a>';
 //echo '<a style="float: right;" href="#" id="refresh">refresh trolley</a>';
-echo '<a href="#" id="refresh" style="float: right;"><span class="badge" style="background-color: #3498db;">refresh trolley</span></a>';
+echo '<br><br><a href="#" id="refresh" style="float: right;"><span class="badge" style="background-color: #3498db;">refresh trolley</span></a>';
 //echo '<br><br><a style="float: right;" href="#" id="conan">empty trolley</a>';
 echo '<br><br><a href="#" id="conan" style="float: right;"><span class="badge" style="background-color: #c0392b;">empty trolley</span></a>';
 $shopname = @$_SESSION['logged_in']['NAME'];
 $shopemail = @$_SESSION['logged_in']['E_MAIL'];
+$ref = @$_SESSION['logged_in']['REF'];
 echo <<<HIDDENDIV
 <table>
 <tr><td style="clear: both; text-align: right;">Shop Name:&nbsp;&nbsp;</td><td><input id="shopname" type="text" class="form-control form-control-inline" name="details[]" value="$shopname"></td>
 </tr>
 <tr><td style="text-align: right;">Email Address:&nbsp;&nbsp;</td><td><input id="emailaddress" type="text" class="form-control form-control-inline" name="details[]" value="$shopemail"></td>
 </tr>
-<tr><td style="text-align: right;">Order Number:&nbsp;&nbsp;</td><td><input id="ordernumber" type="text" class="form-control form-control-inline" name="details[]"></td>
+<tr><td style="text-align: right;">Order Ref:&nbsp;&nbsp;</td><td><input id="ordernumber" type="text" class="form-control form-control-inline" name="details[]" value="$ref"></td>
 </tr>
 <tr><td style="text-align: right;vertical-align:text-top;">Special Instructions:&nbsp;&nbsp;</td><td><textarea id="specialinstructions" class="form-control form-control-inline" name="details[]" rows="5"></textarea></td>
 </tr>
@@ -231,19 +339,20 @@ while ( ! feof($file) ) {
 	$list[$line[2]]=$line[3];
 }
 fclose($file);
-	//ini_set('SMTP','192.168.0.21');
-	//ini_set('sendmail_from','despatch@prestigeleisure.com');
-	//ini_set('smtp_port',25);
-	//$debug[] = @$_SERVER['REQUEST_TIME'];
-	//$debug[] = @$_SERVER['HTTP_USER_AGENT'];
-	//$debug[] = @$_SERVER['REMOTE_ADDR'];
-	//$debug[] = @$_SERVER['REMOTE_HOST'];
-	//$email = "----- debug block -----\r\n";
-	//$email .= print_r($debug, true);
-	//$email .= "----- customer details -----\r\n";
-	//$email .= print_r($_GET, true);
-	//$email .= "----- order items -----\r\n";
-	//$email .= print_r($_SESSION['order_items'], true);
+	/*ini_set('SMTP','192.168.0.21');
+	ini_set('sendmail_from','despatch@prestigeleisure.com');
+	ini_set('smtp_port',25);
+	$debug[] = @$_SERVER['REQUEST_TIME'];
+	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
+	$debug[] = @$_SERVER['REMOTE_ADDR'];
+	$debug[] = @$_SERVER['REMOTE_HOST'];
+	$email = "----- debug block -----\r\n";
+	$email .= print_r($debug, true);
+	$email .= "----- customer details -----\r\n";
+	$email .= print_r($_GET, true);
+	$email .= "----- order items -----\r\n";
+	$email .= print_r($_SESSION['order_items'], true);
+	*/
 	$email = 'Name: ' . $_GET['customer']."\r\n";
 	$email .= 'Email: ' . $_GET['email']."\r\n\r\n";
 	$email .= 'Order Number: ' . $_GET['order_number']."\r\n\r\n";
@@ -252,6 +361,13 @@ fclose($file);
 	foreach ( $_SESSION['order_items'] as $key => $value ) {
 	$email .= $key.' - '.$list[$key]." x $value\r\n";
 	}
+$conn = @mysqlConnObj();
+$sql = "UPDATE downstreamHeaders set status = 2 where uuid = '".$_SESSION['logged_in']['UUID']."';";
+$result = @mysqli_query($conn, $sql);
+mysqli_close($conn);
+$_SESSION['logged_in']['REF'] = '';
+$_SESSION['logged_in']['UUID'] = '';
+savedOrderToSession();
 	if ( mail('orders@mylesbros.co.uk', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
 		unset($_SESSION['order_items']);
 		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3>'));

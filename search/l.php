@@ -42,6 +42,13 @@ if ($conn->connect_error)
 			echo $hash['NAME'].' logged in successfully.';
 			unset($hash['PW']);
 			$_SESSION['logged_in'] = $hash;
+			$_SESSION['logged_in']['REF'] = '';
+			$_SESSION['logged_in']['UUID'] = '';
+			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 0;"; // see also engine.php 104
+			$result = $conn->query($sql);
+			while ($row = mysqli_fetch_assoc($result)) {
+			$_SESSION['saved_orders'][] = $row;
+			}
 		} else
 		{
 			echo 'Incorrect password for '.$hash['NAME'].'.';

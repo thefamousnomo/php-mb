@@ -131,7 +131,7 @@ var tour = new Tour({
 	$("#searchText").select();
 	});
 	function ajaxSend(ele, act, flag) {
-		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), order_number: $('#ordernumber').val(), special_instructions: $('#specialinstructions').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')) } ).done(function( data ) {
+		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), order_number: $('#ordernumber').val(), special_instructions: $('#specialinstructions').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')), uuid: $(ele).data('uuid'), ref: $(ele).html(), oref: $(ele).data('ref') } ).done(function( data ) {
     		if ( flag == 1 ) {
     			$( "#resultsDiv" ).html( data );
     		} else if ( flag == 0 ) {
@@ -141,7 +141,22 @@ var tour = new Tour({
     		}
     		if ( act == '_fav' ) {
     		$(ele).toggleClass('glyphicon-star glyphicon-star-empty');
-    		if ( data != 1 ) alert('oops, there looks to be something wrong with the favourite engine... please let use know!');
+    		if ( data != 1 ) alert('oops, there looks to be something wrong with the favourites engine... please let use know!');
+    		}
+    		if ( act == '_save' ) {
+    		console.log(data);
+    		if ( data == 1 ) {
+    			alert('order successfully saved');
+    			location.reload();
+    		}
+    		}
+    		if ( act == '_savedDelete' || act == '_orderRef' ) {
+    		console.log(data);
+    		location.reload();
+    		}
+    		if ( act == '_savedLoad' ) {
+    		console.log(data);
+    		$('#badge').click();
     		}
     	});
 	}
@@ -189,6 +204,11 @@ var tour = new Tour({
     $('#resultsDiv').on('click', '#refresh', function(){
     	$('#badge').click();
     });
+    $('#resultsDiv').on('click', '#save', function(e){
+        e.preventDefault();
+    	console.log('saved');
+    	ajaxSend($(this), '_save', 2);
+    });
     $('#resultsDiv').on('click', '#orderSubmit', function(){
     if ( $('#shopname').val() && $('#emailaddress').val() ) {
     	$('#orderSubmit').addClass('btn-warning');
@@ -196,12 +216,12 @@ var tour = new Tour({
     }
     });
     $('#resultsDiv').on('click', '.glyphfav', function(){
-    console.log($(this).attr('id'));
-    ajaxSend($(this), '_fav', 2);
+    	console.log($(this).attr('id'));
+    	ajaxSend($(this), '_fav', 2);
     });
     $('#acc_fav').click(function(e){
-    e.preventDefault();
-    ajaxSend($(this), '_favlist', 1);
+    	e.preventDefault();
+    	ajaxSend($(this), '_favlist', 1);
     });
     $('#help').click(function(){
     if ( tour ) {
@@ -222,6 +242,27 @@ var tour = new Tour({
     alert(data);
     location.reload();
     });
+    });
+    $(".savedLoad, .savedDelete").click(function(){
+    if ( $(this).hasClass('savedLoad') ) {
+    console.log('load ' +$(this).data('uuid'));
+    ajaxSend(this, '_savedLoad', 0);
+    }
+    if ( $(this).hasClass('savedDelete') ) {
+    console.log($(this).data('uuid'));
+    ajaxSend(this, '_savedDelete', 2);
+    }
+    });
+    $(".updateOrderNumber").click(function(){
+    console.log('click');
+    $(this).data("initialText", $(this).html());
+    document.execCommand('selectAll',false,null);
+    }).blur(function(){
+    console.log('blur');
+    if ($(this).data("initialText") !== $(this).html()) {
+    console.log(this);
+    ajaxSend(this, '_orderRef', 2);
+    }
     });
 });
 $(document).ajaxStop(function () {
@@ -277,11 +318,21 @@ echo <<<WELCOME
 </div>
 WELCOME;
 } else {
-echo <<<LOGGED
-<p>MY ACCOUNT</p>
-<p>Click <a id="acc_fav" href="#">here</a> to list your favourite products.</p>
-<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a>
-LOGGED;
+echo '<p>MY ACCOUNT</p>
+<p>Click <a id="acc_fav" href="#">here</a> to list your favourite products.</p>';
+echo '<p>You have '.@count($_SESSION['saved_orders']).' saved orders</p>';
+echo '<div class="table-responsive"><table class="table table-hover">
+<thead>
+	<tr>
+		<td>Order date</td><td>Order Reference</td><td>Number of lines</td><td>Load to trolley</td><td>Delete</td></tr></thead><tbody>
+';
+if ( @count($_SESSION['saved_orders']) ) {
+foreach ( @$_SESSION['saved_orders'] as $order ) {
+echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="updateOrderNumber" data-uuid="'.$order['uuid'].'">'.$order['ref'].'</td><td>'.$order['order_lines'].'</td><td><span data-ref="'.$order['ref'].'" data-uuid="'.$order['uuid'].'" class="savedLoad glyphicon glyphicon-floppy-open glyphlink"></span></td><td><span data-uuid="'.$order['uuid'].'" class="savedDelete glyphicon glyphicon-floppy-remove glyphlink"></span></td></tr>';
+}
+}
+echo '</tbody></table>';
+echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a>';
 }
 ?>
 </div><br>
@@ -302,7 +353,9 @@ LOGGED;
 </div>
 <hr style="clear: both;">
 <?php
-//print_r($_SESSION);
+echo '<pre>';
+print_r($_SESSION);
+echo '</pre>';
 ?>
 </body>
 </html>
