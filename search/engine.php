@@ -143,6 +143,7 @@ $sql = "DELETE FROM downstreamHeaders where uuid = '".$_GET['uuid']."' and custo
 $result = @mysqli_query($conn, $sql);
 mysqli_close($conn);
 savedOrderToSession();
+$_SESSION['logged_in']['UUID'] = '';
 $_SESSION['logged_in']['REF'] = '';
 exit;
 }
