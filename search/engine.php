@@ -363,6 +363,7 @@ fclose($file);
 	foreach ( $_SESSION['order_items'] as $key => $value ) {
 	$email .= $key.' - '.$list[$key]." x $value\r\n";
 	}
+if ( LoggedIN() ) {
 $conn = @mysqlConnObj();
 $sql = "UPDATE downstreamHeaders set status = 2 where uuid = '".$_SESSION['logged_in']['UUID']."';";
 $result = @mysqli_query($conn, $sql);
@@ -370,6 +371,7 @@ mysqli_close($conn);
 $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
 savedOrderToSession();
+}
 	if ( mail('orders@mylesbros.co.uk', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
 		unset($_SESSION['order_items']);
 		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3>'));
