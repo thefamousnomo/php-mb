@@ -55,6 +55,13 @@ exit;
 }
 /* --- log out function ends */
 
+/* --- start new order block */
+if ( $_GET['action'] == '_startNewOrder' && loggedIN() ) {
+$_SESSION['logged_in']['UUID'] = '';
+$_SESSION['logged_in']['REF'] = '';
+}
+/* --- start new order block ends */
+
 /* --- display function */
 function arrayReturn($z, $head, $qCount=1) {
 //
@@ -64,7 +71,8 @@ $conn = @mysqlConnObj();
 @$searchMessage = ( $head == 'Your Order' ) ? ' items in trolley' : $searchMessage;
 $p = ( loggedIN() ) ? 4 : 5;
 $m = ( loggedIN() ) ? 'Unit Price' : 'RRP';
-echo "<h3>$head - ".count($z)."$searchMessage</h3><br>";
+echo "<h3>$head - ".count($z)."$searchMessage</h3><br><p>";
+echo ( $_SESSION['logged_in']['REF'] !== '' && $_SESSION['logged_in']['UUID'] !== '' ) ? 'You are currently working on order reference - '.$_SESSION['logged_in']['REF'].'</p>' : 'You aren\'t currently working on any orders</p>';
 	if ( count($z) > 0 ) {
 		$output = '<div class="table-responsive"><table class="table table-striped">
 		<thead>
