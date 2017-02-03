@@ -4,19 +4,19 @@ session_start();
 $basket_qty = @count($_SESSION['order_items']);
 ?>
 <!DOCTYPE html>
-<HTML LANG="en">
-<HEAD>
-  <TITLE>Myles Bros Ltd</TITLE>
-  <META CHARSET="utf-8">
-  <META NAME="viewport" CONTENT="width=device-width, initial-scale=1">
-  <LINK REL="stylesheet" HREF="/search/css/bootstrap.min.css">
-  <LINK HREF="/search/css/bootstrap-tour.min.css" REL="stylesheet">
-  <LINK HREF="http://fonts.googleapis.com/css?family=Montserrat" REL="stylesheet" TYPE="text/css">
-  <LINK HREF="http://fonts.googleapis.com/css?family=Lato" REL="stylesheet" TYPE="text/css">
-  <SCRIPT SRC="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></SCRIPT>
-  <SCRIPT SRC="search/js/bootstrap.min.js"></SCRIPT>
-  <SCRIPT SRC="search/js/bootstrap-tour.min.js"></SCRIPT>
-<STYLE>
+<html lang="en">
+<head>
+  <title>Myles Bros Ltd</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/search/css/bootstrap.min.css">
+  <link href="/search/css/bootstrap-tour.min.css" rel="stylesheet">
+  <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="search/js/bootstrap.min.js"></script>
+  <script src="search/js/bootstrap-tour.min.js"></script>
+<style>
 // * { border: 1px solid black; }
 .jumbotron { 
     background-color: #3498db; /* Peter River */
@@ -56,8 +56,8 @@ width: 30%;
 .glyphfav {
 font-size:1.2em;
 }
-</STYLE>
-<SCRIPT TYPE="text/javascript">
+</style>
+<script type="text/javascript">
 $(document).ready(function(){
 
 var tour = new Tour({
@@ -105,7 +105,7 @@ var tour = new Tour({
   {
     element: "#refresh",
     title: "Refresh your trolley",
-    content: "Any changes to quantities you make here will be reflected on your order, but may not be shown here... if you do make changes, please refresh your trolley.<BR><BR>PRO-TIP - want to remove an item? Change the quantity to 0",
+    content: "Any changes to quantities you make here will be reflected on your order, but may not be shown here... if you do make changes, please refresh your trolley.<br><br>PRO-TIP - want to remove an item? Change the quantity to 0",
     placement: "left"
   },
   {
@@ -117,7 +117,7 @@ var tour = new Tour({
   {
     element: "#orderSubmit",
     title: "Submit your order",
-    content: "Fill in your details and your order will be placed.<BR><BR><STRONG>Additional points</STRONG><BR><BR>Your order will remain in your trolley until you close your browser, but should remain if you navigate away and come back. Please forward any comments or feedback to <A HREF='mailto:info@mylesbros.co.uk'>info@mylesbros.co.uk</A>"
+    content: "Fill in your details and your order will be placed.<br><br><strong>Additional points</strong><br><br>Your order will remain in your trolley until you close your browser, but should remain if you navigate away and come back. Please forward any comments or feedback to <a href='mailto:info@mylesbros.co.uk'>info@mylesbros.co.uk</a>"
   }
 ]});
 
@@ -281,46 +281,46 @@ var tour = new Tour({
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
 });
-</SCRIPT>
-</HEAD>
-<BODY>
-<DIV STYLE="overflow-x: hidden;">
-<DIV CLASS="jumbotron text-center jumbosmallmargin">
-  <H1>Myles Bros Ltd</H1>
-  <P>Wholesale Hardware Factors</P><BR>
-<DIV CLASS="row rowNoMargin">
-  <DIV CLASS="col-sm-6 col-sm-offset-3">
-    <DIV CLASS="input-group">
-      <INPUT TYPE="text" CLASS="form-control" ARIA-LABEL="..." PLACEHOLDER="search our database" ID="searchText">
-      <DIV CLASS="input-group-btn">
-        <BUTTON TYPE="button" CLASS="btn btn-default dropdown-toggle" DATA-TOGGLE="dropdown" ARIA-HASPOPUP="true" ARIA-EXPANDED="false"><SPAN ID="filter" DATA-FIELD="3">Description</SPAN> <SPAN CLASS="caret"></SPAN></BUTTON>
-        <UL CLASS="dropdown-menu dropdown-menu-right">
-          <LI><A ID="filter-code" DATA-FIELD="2" HREF="#">Code</A></LI>
-          <LI><A ID="filter-supplier" DATA-FIELD="1" HREF="#">Supplier</A></LI>
-          <LI><A ID="filter-description" DATA-FIELD="3" HREF="#">Description</A></LI>
-          <LI ROLE="separator" CLASS="divider"></LI>
-          <LI><A ID="filter-specialoffers" HREF="#">Special Offers</A></LI>
-        </UL>
-      </DIV><!-- /btn-group -->
-    </DIV><!-- /input-group -->
-  </DIV><!-- /.col-sm-6 col-sm-offset-3 -->
-</DIV>
-<BR><BUTTON TYPE="button" CLASS="btn btn-lg btn-success" ID="searchButton" DATA-AON="1"><SPAN CLASS="glyphicon glyphicon-search"></SPAN> Search</BUTTON>
-</DIV>
-<DIV CLASS="container">
-<DIV STYLE="float: right; text-align: right;"><A ID="trolley" HREF="#"><SPAN ID="badge" CLASS="badge" STYLE="background-color: #3498db;"><SPAN ID="basket_qty"><?php echo $basket_qty;?></SPAN>&nbsp;items in trolley&nbsp;<SPAN CLASS="glyphicon glyphicon-shopping-cart"></SPAN></SPAN></A></DIV>
-<DIV STYLE="float: left; width: 100%;"><A HREF="./"><SPAN CLASS="glyphicon glyphicon-home glyphlink"></SPAN></A>&nbsp;&nbsp;
+</script>
+</head>
+<body>
+<div style="overflow-x: hidden;">
+<div class="jumbotron text-center jumbosmallmargin">
+  <h1>Myles Bros Ltd</h1>
+  <p>Wholesale Hardware Factors</p><br>
+<div class="row rowNoMargin">
+  <div class="col-sm-6 col-sm-offset-3">
+    <div class="input-group">
+      <input type="text" class="form-control" aria-label="..." placeholder="search our database" id="searchText">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="filter" data-field="3">Description</span> <span class="caret"></span></button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li><a id="filter-code" data-field="2" href="#">Code</a></li>
+          <li><a id="filter-supplier" data-field="1" href="#">Supplier</a></li>
+          <li><a id="filter-description" data-field="3" href="#">Description</a></li>
+          <li role="separator" class="divider"></li>
+          <li><a id="filter-specialoffers" href="#">Special Offers</a></li>
+        </ul>
+      </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+  </div><!-- /.col-sm-6 col-sm-offset-3 -->
+</div>
+<br><button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
+</div>
+<div class="container">
+<div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
+<div style="float: left; width: 100%;"><a href="./"><span class="glyphicon glyphicon-home glyphlink"></span></a>&nbsp;&nbsp;
 <?php if (! is_array(@$_SESSION['logged_in']) ) echo '<a href="#"><span id="login" class="glyphicon glyphicon-log-in glyphlink"></span></a>'; ?>
-<H4><?php echo @$_SESSION['logged_in']['NAME'];?></H4>
-<DIV STYLE="width: 100%;">
-<DIV ID="logger" STYLE="display: none;">
-<INPUT TYPE="text" CLASS="form-control" ID="ver-u" PLACEHOLDER="username">
-<INPUT STYLE="margin-top: 10px;" TYPE="password" CLASS="form-control" ID="ver-p" PLACEHOLDER="password">
-<A HREF="#" ID="verify"><SPAN CLASS="badge" STYLE="background-color: #3498db; margin-top: 10px;">Log in</SPAN></A>
-</DIV>
-</DIV>
-</DIV>
-<DIV ID="resultsDiv" STYLE="clear: both; padding-top: 1px; width: 100%;">
+<h4><?php echo @$_SESSION['logged_in']['NAME'];?></h4>
+<div style="width: 100%;">
+<div id="logger" style="display: none;">
+<input type="text" class="form-control" id="ver-u" placeholder="username">
+<input style="margin-top: 10px;" type="password" class="form-control" id="ver-p" placeholder="password">
+<a href="#" id="verify"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log in</span></a>
+</div>
+</div>
+</div>
+<div id="resultsDiv" style="clear: both; padding-top: 1px; width: 100%;">
 <?php
 if (! is_array(@$_SESSION['logged_in']) ) {
 echo <<<WELCOME
@@ -350,27 +350,27 @@ echo '</tbody></table>';
 echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a>';
 }
 ?>
-</DIV><BR>
-<HR STYLE="clear: both;">
-<DIV CLASS="container">
-<DIV CLASS="row">
-		<DIV CLASS="col-xs-6">
-		<DIV>Contact</DIV><BR>
-		<SPAN CLASS="glyphicon glyphicon-envelope"></SPAN> Sandy Myles - Director<BR><SPAN CLASS="glyphicon glyphicon-envelope"></SPAN> Peter Myles - Director<BR><SPAN CLASS="glyphicon glyphicon-envelope"></SPAN> Linsey McGill - Accounts<BR><BR>
-		<DIV><SPAN CLASS="glyphicon glyphicon-earphone"></SPAN> 01506-859158<BR><SPAN CLASS="glyphicon glyphicon-print"></SPAN> 01506-853618</DIV>		
-        </DIV>
-        <DIV CLASS="col-xs-6 text-right">
-        <DIV>Office</DIV><BR>
-        Myles Bros Ltd<BR>Unit 1, Greendykes Ind Est<BR>Broxburn<BR>West Lothian<BR>EH52 6PG
-        </DIV>
-</DIV>
-</DIV>
-</DIV>
-<HR STYLE="clear: both;">
+</div><br>
+<hr style="clear: both;">
+<div class="container">
+<div class="row">
+		<div class="col-xs-6">
+		<div>Contact</div><br>
+		<span class="glyphicon glyphicon-envelope"></span> Sandy Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Peter Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Linsey McGill - Accounts<br><br>
+		<div><span class="glyphicon glyphicon-earphone"></span> 01506-859158<br><span class="glyphicon glyphicon-print"></span> 01506-853618</div>		
+        </div>
+        <div class="col-xs-6 text-right">
+        <div>Office</div><br>
+        Myles Bros Ltd<br>Unit 1, Greendykes Ind Est<br>Broxburn<br>West Lothian<br>EH52 6PG
+        </div>
+</div>
+</div>
+</div>
+<hr style="clear: both;">
 <?php
 //echo '<pre>';
 //print_r($_SESSION);
 //echo '</pre>';
 ?>
-</BODY>
-</HTML>
+</body>
+</html>
