@@ -347,7 +347,7 @@ echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="upd
 }
 }
 echo '</tbody></table>';
-echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a>';
+echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a></div>';
 }
 ?>
 </div><br>

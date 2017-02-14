@@ -72,7 +72,9 @@ $conn = @mysqlConnObj();
 $p = ( loggedIN() ) ? 4 : 5;
 $m = ( loggedIN() ) ? 'Unit Price' : 'RRP';
 echo "<h3>$head - ".count($z)."$searchMessage</h3><br><p>";
-echo ( $_SESSION['logged_in']['REF'] !== '' && $_SESSION['logged_in']['UUID'] !== '' ) ? 'You are currently working on order reference - '.$_SESSION['logged_in']['REF'].'</p>' : 'You aren\'t currently working on any orders</p>';
+if ( loggedIN() ) {
+echo ( @$_SESSION['logged_in']['REF'] !== '' && @$_SESSION['logged_in']['UUID'] !== ''  ) ? 'You are currently working on order reference - '.@$_SESSION['logged_in']['REF'].'</p>' : 'You aren\'t currently working on any orders</p>';
+}
 	if ( count($z) > 0 ) {
 		$output = '<div class="table-responsive"><table class="table table-striped">
 		<thead>
