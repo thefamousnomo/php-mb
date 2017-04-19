@@ -44,6 +44,8 @@ if ($conn->connect_error)
 			$_SESSION['logged_in'] = $hash;
 			$_SESSION['logged_in']['REF'] = '';
 			$_SESSION['logged_in']['UUID'] = '';
+			$update = "UPDATE users SET last_login = null WHERE account_ref = '".$hash['ACCOUNT_REF']."';";
+			$conn->query($update);
 			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 0;"; // see also engine.php 104
 			$result = $conn->query($sql);
 			while ($row = mysqli_fetch_assoc($result)) {
