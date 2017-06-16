@@ -1,5 +1,10 @@
 <?php
 session_start();
+if ( @$_GET['clear'] == 1 ) {
+  setcookie('remember_me', null, -1, '/');
+  unset($_SESSION['logged_in']);
+  unset($_SESSION['saved_orders']);
+}
 require('password.php');
 $dbc = parse_ini_file("../../c.ini");
 $servername = $dbc['servername'];
@@ -7,8 +12,8 @@ $username = $dbc['username'];
 $password = $dbc['password'];
 $dbname = $dbc['dbname'];
 $conn = new mysqli($servername, $username, $password, $dbname);
-$id = $conn->real_escape_string($_POST['u']);
-$pw = $conn->real_escape_string($_POST['p']);
+$id = @$conn->real_escape_string($_POST['u']);
+$pw = @$conn->real_escape_string($_POST['p']);
 // Check connection
 if ($conn->connect_error)
 {
@@ -37,16 +42,22 @@ if ($conn->connect_error)
 			echo "Your password has been emailed to your email address. Please keep this password safe.";
 			exit;
 		}
-		if (password_verify($pw, $hash['PW'])) 
+		if (password_verify($pw, $hash['PW']))
 		{
-			echo $hash['NAME'].' logged in successfully.';
+      echo $hash['NAME'].' logged in successfully.';
 			unset($hash['PW']);
 			$_SESSION['logged_in'] = $hash;
 			$_SESSION['logged_in']['REF'] = '';
 			$_SESSION['logged_in']['UUID'] = '';
-			$update = "UPDATE users SET last_login = null WHERE account_ref = '".$hash['ACCOUNT_REF']."';";
+      $selector = $authenticator = null;
+      if ( $_POST['r'] == 'true' ) {
+        $selector = base64_encode(substr(md5(uniqid(mt_rand(), true)), 4, 13));
+        $authenticator = substr(md5(uniqid(mt_rand(), true)), 4, 37);
+      }
+      setcookie('remember_me', $selector.':'.base64_encode($authenticator), time() + 864000, '/');
+			$update = "UPDATE users SET last_login = null, selector = '".$selector."', token = '".hash('sha256', $authenticator)."' WHERE account_ref = '".$hash['ACCOUNT_REF']."';";
 			$conn->query($update);
-			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 0;"; // see also engine.php 104
+			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 0;"; // see also engine.php
 			$result = $conn->query($sql);
 			while ($row = mysqli_fetch_assoc($result)) {
 			$_SESSION['saved_orders'][] = $row;

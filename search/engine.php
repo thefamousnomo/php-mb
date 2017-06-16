@@ -51,6 +51,7 @@ if ( $_GET['action'] == '_lo' ) {
 echo 'You are now logged out.';
 unset($_SESSION['logged_in']);
 unset($_SESSION['saved_orders']);
+//setcookie('remember_me', null, -1, '/');
 exit;
 }
 /* --- log out function ends */
@@ -135,7 +136,7 @@ $i++;
 }
 $resultL = @mysqli_query($conn, $sql);
 echo ( $resultH && $resultL );
-$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 0;"; // see also l.php 45
+$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 0;"; // see also l.php
 $result = $conn->query($sql);
 while ($row = mysqli_fetch_assoc($result)) {
 $_SESSION['saved_orders'][] = $row;

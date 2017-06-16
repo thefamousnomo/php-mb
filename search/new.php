@@ -1,6 +1,7 @@
 <?php
 date_default_timezone_set('Europe/London');
 session_start();
+require_once('rm.php');
 $basket_qty = @count($_SESSION['order_items']);
 ?>
 <!DOCTYPE html>
@@ -18,7 +19,7 @@ $basket_qty = @count($_SESSION['order_items']);
   <script src="search/js/bootstrap-tour.min.js"></script>
 <style>
 // * { border: 1px solid black; }
-.jumbotron { 
+.jumbotron {
     background-color: #3498db; /* Peter River */
     color: #ffffff;
     font-family: Montserrat, sans-serif;
@@ -236,7 +237,7 @@ var tour = new Tour({
     }
     });
     $("#verify").click(function(){
-    $.post( "/search/l.php", {u: $("#ver-u").val(), p: $("#ver-p").val()} ).done(function(data){
+    $.post( "/search/l.php", {u: $("#ver-u").val(), p: $("#ver-p").val(), r: $("#remember_me").prop('checked')} ).done(function(data){
     alert(data);
     location.reload();
     });
@@ -317,6 +318,7 @@ $("#searchButton").removeClass('btn-warning');
 <input type="text" class="form-control" id="ver-u" placeholder="username">
 <input style="margin-top: 10px;" type="password" class="form-control" id="ver-p" placeholder="password">
 <a href="#" id="verify"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log in</span></a>
+<div style="float: right; padding: 5px;"><input type="checkbox" id="remember_me">&nbsp;remember me</div>
 </div>
 </div>
 </div>
@@ -357,7 +359,7 @@ echo '<a href="#" id="log-out"><span class="badge" style="background-color: #349
 		<div class="col-xs-6">
 		<div>Contact</div><br>
 		<span class="glyphicon glyphicon-envelope"></span> Sandy Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Peter Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Linsey McGill - Accounts<br><br>
-		<div><span class="glyphicon glyphicon-earphone"></span> 01506-859158<br><span class="glyphicon glyphicon-print"></span> 01506-853618</div>		
+		<div><span class="glyphicon glyphicon-earphone"></span> 01506-859158<br><span class="glyphicon glyphicon-print"></span> 01506-853618</div>
         </div>
         <div class="col-xs-6 text-right">
         <div>Office</div><br>
@@ -369,6 +371,7 @@ echo '<a href="#" id="log-out"><span class="badge" style="background-color: #349
 <hr style="clear: both;">
 <?php
 //echo '<pre>';
+//print_r($_COOKIE);
 //print_r($_SESSION);
 //echo '</pre>';
 ?>
