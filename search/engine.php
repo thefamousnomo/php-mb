@@ -3,7 +3,7 @@ session_start();
 
 /* --- logged in? */
 function loggedIN() {
-return ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 6 );
+return ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 9 );
 }
 /* -- logged in? ends */
 
@@ -51,7 +51,7 @@ if ( $_GET['action'] == '_lo' ) {
 echo 'You are now logged out.';
 unset($_SESSION['logged_in']);
 unset($_SESSION['saved_orders']);
-//setcookie('remember_me', null, -1, '/');
+setcookie('remember_me', null, -1, '/');
 exit;
 }
 /* --- log out function ends */
