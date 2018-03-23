@@ -53,10 +53,10 @@ if ($conn->connect_error)
       if ( $_POST['r'] == 'true' ) {
         $selector = base64_encode(substr(md5(uniqid(mt_rand(), true)), 4, 13));
         $authenticator = substr(md5(uniqid(mt_rand(), true)), 4, 37);
+        setcookie('remember_me', $selector.':'.base64_encode($authenticator), time() + 864000, '/');
+  			$update = "UPDATE users SET last_login = null, selector = '".$selector."', token = '".hash('sha256', $authenticator)."' WHERE account_ref = '".$hash['ACCOUNT_REF']."';";
+  			$conn->query($update);
       }
-      setcookie('remember_me', $selector.':'.base64_encode($authenticator), time() + 864000, '/');
-			$update = "UPDATE users SET last_login = null, selector = '".$selector."', token = '".hash('sha256', $authenticator)."' WHERE account_ref = '".$hash['ACCOUNT_REF']."';";
-			$conn->query($update);
 			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 0;"; // see also engine.php
 			$result = $conn->query($sql);
 			while ($row = mysqli_fetch_assoc($result)) {

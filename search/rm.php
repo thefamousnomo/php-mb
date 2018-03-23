@@ -1,6 +1,8 @@
 <?php
-if (!@is_array($_SESSION['logged_in']) && @$_COOKIE['remember_me'] !==':') {
+if (!@is_array($_SESSION['logged_in']) && @isset($_COOKIE['remember_me']) && @$_COOKIE['remember_me'] !=='' && @$_COOKIE['remember_me'] !==':' && strpos(@$_COOKIE['remember_me'], ':') !== false ) {
     @list($selector, $authenticator) = explode(':', @$_COOKIE['remember_me']);
+
+    if ( $selector == '' ) exit;
 
     $selector = substr($selector, 0, 12);
 

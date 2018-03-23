@@ -18,7 +18,7 @@ $basket_qty = @count($_SESSION['order_items']);
   <script src="search/js/bootstrap-tour.min.js"></script>
 <style>
 // * { border: 1px solid black; }
-.jumbotron { 
+.jumbotron {
     background-color: #3498db; /* Peter River */
     color: #ffffff;
     font-family: Montserrat, sans-serif;
@@ -48,7 +48,7 @@ color: #3498db;
 margin-bottom: 20px;
 }
 #logger *{
-margin-top: 10px; 
+margin-top: 10px;
 }
 </style>
 <script type="text/javascript">
@@ -220,6 +220,7 @@ $("#searchButton").removeClass('btn-warning');
           <li><a id="filter-code" data-field="2" href="#">Code</a></li>
           <li><a id="filter-supplier" data-field="1" href="#">Supplier</a></li>
           <li><a id="filter-description" data-field="3" href="#">Description</a></li>
+          <li><a id="filter-barcode" data-field="7" href="#">Barcode</a></li>
           <li role="separator" class="divider"></li>
           <li><a id="filter-specialoffers" href="#">Special Offers</a></li>
         </ul>
@@ -253,7 +254,7 @@ $("#searchButton").removeClass('btn-warning');
 		<div class="col-xs-6">
 		<div>Contact</div><br>
 		<span class="glyphicon glyphicon-envelope"></span> Sandy Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Peter Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Linsey McGill - Accounts<br><br>
-		<div><span class="glyphicon glyphicon-earphone"></span> 01506-859158<br><span class="glyphicon glyphicon-print"></span> 01506-853618</div>		
+		<div><span class="glyphicon glyphicon-earphone"></span> 01506-859158<br><span class="glyphicon glyphicon-print"></span> 01506-853618</div>
         </div>
         <div class="col-xs-6 text-right">
         <div>Office</div><br>
