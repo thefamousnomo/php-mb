@@ -124,8 +124,10 @@ var tour = new Tour({
 
 	$("li > a[id^=filter-]").click(function(){
 		if ( this.id == 'filter-specialoffers' ) {
+    //$("#filter").data("field", 3).text("Special Offers");
 		$("#searchText").val("*SO*");
 		$("#searchButton").click();
+    //$("#searchText").val("");
 		} else {
 		$("#filter").text(this.text).data("field", $(this).data("field"));
 		}
@@ -299,6 +301,7 @@ $("#searchButton").removeClass('btn-warning');
           <li><a id="filter-code" data-field="2" href="#">Code</a></li>
           <li><a id="filter-supplier" data-field="1" href="#">Supplier</a></li>
           <li><a id="filter-description" data-field="3" href="#">Description</a></li>
+          <li><a id="filter-barcode" data-field="7" href="#">Barcode</a></li>
           <li role="separator" class="divider"></li>
           <li><a id="filter-specialoffers" href="#">Special Offers</a></li>
         </ul>
@@ -333,12 +336,18 @@ echo <<<WELCOME
 </div>
 WELCOME;
 } else {
-echo '<p>MY ACCOUNT</p>
-<p>Click <a id="acc_fav" href="#">here</a> to list your favourite products.</p>';
+echo '<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#MyAccount">My Account</a></li>
+  <li><a id="acc_fav" href="#">Favourite Products</a></li>
+  <li><a data-toggle="tab" href="#ChangePassword">Change Password</a></li>
+</ul>
+<br>
+<div class="tab-content">
+<div id="MyAccount" class="tab-pane fade in active">';
 echo '<p>You have '.@count($_SESSION['saved_orders']).' saved orders</p><p>';
 echo ( $_SESSION['logged_in']['REF'] !== '' && $_SESSION['logged_in']['UUID'] !== '' ) ? 'You are currently working on order reference - '.$_SESSION['logged_in']['REF'] : 'You aren\'t currently working on any orders';
 echo '<p><a href="#" id="startNewOrder">Start New Order</a></p>';
-echo '</p><div class="table-responsive"><table class="table table-hover">
+echo '<div class="table-responsive"><table class="table table-hover">
 <thead>
 	<tr>
 		<td>Order date</td><td>Order Reference</td><td>Number of lines</td><td>Load to trolley</td><td>Delete</td></tr></thead><tbody>
@@ -348,7 +357,13 @@ foreach ( @$_SESSION['saved_orders'] as $order ) {
 echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="updateOrderNumber" data-uuid="'.$order['uuid'].'">'.$order['ref'].'</td><td>'.$order['order_lines'].'</td><td><a href="#"><span data-ref="'.$order['ref'].'" data-uuid="'.$order['uuid'].'" class="savedLoad glyphicon glyphicon-floppy-open glyphlink"></span></a></td><td><a href="#"><span data-uuid="'.$order['uuid'].'" class="savedDelete glyphicon glyphicon-floppy-remove glyphlink"></span></a></td></tr>';
 }
 }
-echo '</tbody></table>';
+echo '</tbody></table>
+</div>
+</div>';
+echo '<div id="ChangePassword" class="tab-pane fade">
+ResetPassword
+</div>';
+echo '</div>';
 echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a></div>';
 }
 ?>
