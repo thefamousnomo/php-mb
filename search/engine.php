@@ -47,7 +47,7 @@ if ( loggedIN() ) {
 /* --- return favourite function ends */
 
 /* --- log out function */
-if ( $_GET['action'] == '_lo' ) {
+if ( @$_GET['action'] == '_lo' ) {
 echo 'You are now logged out.';
 unset($_SESSION['logged_in']);
 unset($_SESSION['saved_orders']);
@@ -57,7 +57,7 @@ exit;
 /* --- log out function ends */
 
 /* --- start new order block */
-if ( $_GET['action'] == '_startNewOrder' && loggedIN() ) {
+if ( @$_GET['action'] == '_startNewOrder' && loggedIN() ) {
 $_SESSION['logged_in']['UUID'] = '';
 $_SESSION['logged_in']['REF'] = '';
 }
@@ -98,7 +98,7 @@ mysqli_close($conn);
 /* --- display function ends */
 
 /* --- favourite block */
-if ( $_GET['action'] == '_fav' && loggedIN() ) {
+if ( @$_GET['action'] == '_fav' && loggedIN() ) {
 $conn = @mysqlConnObj();
 $sql = ( $_GET['fav'] == 'true' ) ? "INSERT INTO favs (ACCOUNT_REF, SKU) VALUES ('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$_GET['f']."')" : "DELETE FROM favs where ACCOUNT_REF ='".$_SESSION['logged_in']['ACCOUNT_REF']."' AND SKU ='".$_GET['f']."';";
 $result = @mysqli_query($conn, $sql);
@@ -110,7 +110,7 @@ exit;
 /* --- favourite block ends */
 
 /* --- save block */
-if ( $_GET['action'] == '_save' && loggedIN() ) {
+if ( @$_GET['action'] == '_save' && loggedIN() ) {
 $conn = @mysqlConnObj();
 unset($_SESSION['saved_orders']);
 if ( ! empty($_SESSION['logged_in']['UUID']) ) {
@@ -148,7 +148,7 @@ exit;
 /* --- save block ends */
 
 /* --- saved order delete block */
-if ( $_GET['action'] == '_savedDelete' && loggedIN() && !empty($_GET['uuid']) ) {
+if ( @$_GET['action'] == '_savedDelete' && loggedIN() && !empty($_GET['uuid']) ) {
 $conn = @mysqlConnObj();
 $sql = "DELETE FROM downstreamHeaders where uuid = '".$_GET['uuid']."' and customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."';";
 $result = @mysqli_query($conn, $sql);
@@ -161,7 +161,7 @@ exit;
 /* --- saved order delete block ends */
 
 /* --- order ref update block */
-if ( $_GET['action'] == '_orderRef' && loggedIN() && !empty($_GET['uuid']) ) {
+if ( @$_GET['action'] == '_orderRef' && loggedIN() && !empty($_GET['uuid']) ) {
 $conn = @mysqlConnObj();
 $sql = "UPDATE downstreamHeaders set ref = '".$_GET['ref']."' where uuid = '".$_GET['uuid']."';";
 $result = @mysqli_query($conn, $sql);
@@ -173,7 +173,7 @@ exit;
 /* --- order ref update block ends */
 
 /* --- favourite list block */
-if ( $_GET['action'] == '_favlist' && loggedIN() ) {
+if ( @$_GET['action'] == '_favlist' && loggedIN() ) {
 $conn = @mysqlConnObj();
 $sql = "SELECT sku FROM favs where account_ref = '".$_SESSION['logged_in']['ACCOUNT_REF']."';";
 $result = @mysqli_query($conn, $sql);
@@ -194,7 +194,7 @@ exit;
 /* --- favourite list block ends */
 
 /* --- saved load block */
-if ( $_GET['action'] == '_savedLoad' && loggedIN() && !empty($_GET['uuid']) ) {
+if ( @$_GET['action'] == '_savedLoad' && loggedIN() && !empty($_GET['uuid']) ) {
 unset($_SESSION['order_items']);
 $conn = @mysqlConnObj();
 $sql = "SELECT code, qty from downstreamLines where uuid = '".$_GET['uuid']."';";
@@ -211,7 +211,7 @@ exit;
 /* --- saved load block ends */
 
 /* --- search block */
-if ( $_GET['action'] == '_search' ) {
+if ( @$_GET['action'] == '_search' ) {
 
 $q = strtoupper($_GET['q']);
 $q = explode(' ', $q);
@@ -284,7 +284,7 @@ exit;
 /* --- search block ends */
 
 /* --- add to order block */
-if ( $_GET['action'] == '_add' ) {
+if ( @$_GET['action'] == '_add' ) {
 	if ( $_GET['qty'] == 0 ) {
 		if ( @array_key_exists($_GET['sku'], $_SESSION['order_items']) ) unset($_SESSION['order_items'][$_GET['sku']]);
 	} else	{
@@ -296,7 +296,7 @@ exit;
 /* --- add to order block ends */
 
 /* --- trolley display block */
-if ( $_GET['action'] == '_trolley' ) {
+if ( @$_GET['action'] == '_trolley' ) {
 if ( @count($_SESSION['order_items']) == 0 )  {
 echo '<h3>No items in trolley</h3>';
 exit;
@@ -337,7 +337,7 @@ exit;
 /* --- trolley display block ends */
 
 /* --- destroy block begins */
-if ( $_GET['action'] == '_destroy' ) {
+if ( @$_GET['action'] == '_destroy' ) {
 	unset($_SESSION['order_items']);
 	echo json_encode(array('count' => 0));
 	exit;
@@ -345,7 +345,7 @@ if ( $_GET['action'] == '_destroy' ) {
 /* --- destroy block end */
 
 /* --- order block begins */
-if ( $_GET['action'] == '_order' ) {
+if ( @$_GET['action'] == '_order' ) {
 $file = fopen("pricelist.dat", "r");
 while ( ! feof($file) ) {
 	$line = fgetcsv($file);
@@ -392,4 +392,72 @@ savedOrderToSession();
 exit;
 }
 /* --- order block end */
+
+/* --- change password block begins */
+if ( $_POST['action'] == '_chpasswd' && loggedIN() ) {
+	function checkOldPassword($oldPw, &$retObj) {
+			$conn = @mysqlConnObj();
+			$id = $_SESSION['logged_in']['ACCOUNT_REF'];
+			$sql = "SELECT * FROM users where account_ref = '$id';";
+			$result = mysqli_query($conn, $sql);
+			$row = mysqli_fetch_assoc($result);
+			mysqli_close($conn);
+			if (password_verify($oldPw, $row['PW'])) {
+				$retObj['oldPW'] = 1;
+			} else {
+				$retObj['oldPW'] = 0;
+			}
+	}
+	function checkNewPassword($newPw, &$retObj) {
+		if (strlen($newPw) < 8) {
+      $retObj['pwLen'] = 0;
+    } else {
+			$retObj['pwLen'] = 1;
+		}
+		if (!preg_match("#[0-9]+#", $newPw)) {
+      $retObj['pwNum'] = 0;
+    } else {
+			$retObj['pwNum'] = 1;
+		}
+		if (!preg_match("#[A-Z]+#", $newPw)) {
+      $retObj['pwCap'] = 0;
+    } else {
+			$retObj['pwCap'] = 1;
+		}
+	}
+	function checkPassword($oldPw, $newPw, $cnewPw, &$retObj) {
+		if ( $newPw <> $cnewPw ) {
+			$retObj['pwMatch'] = 0;
+		} else {
+			$retObj['pwMatch'] = 1;
+		}
+		checkOldPassword($oldPw, $retObj);
+		checkNewPassword($newPw, $retObj);
+	}
+	$retObj = array();
+	checkPassword($_POST['o'], $_POST['n'], $_POST['c'], $retObj);
+	if ( count(array_keys($retObj, 1)) == count($retObj) ) {
+		$conn = @mysqlConnObj();
+		$id = $_SESSION['logged_in']['ACCOUNT_REF'];
+		$h = password_hash($_POST['n'], PASSWORD_DEFAULT);
+		$sql = "UPDATE users set pw = '$h' where account_ref = '$id';";
+		$result = mysqli_query($conn, $sql);
+		mysqli_close($conn);
+		$retObj['pwCh'] = 1;
+		$debug[] = @$_SERVER['REQUEST_TIME'];
+		$debug[] = @$_SERVER['HTTP_USER_AGENT'];
+		$debug[] = @$_SERVER['REMOTE_ADDR'];
+		$debug[] = @$_SERVER['REMOTE_HOST'];
+		$email = "Your Myles Bros Online password has just been changed! Please contact us immediately if this wasn't you.\r\n\r\n";
+		$email .= "----- debug block -----\r\n";
+		$email .= print_r($debug, true);
+		mail($_SESSION['logged_in']['E_MAIL'], 'Myles Bros Online Password Change', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk');
+	} else {
+		$retObj['pwCh'] = 0;
+	}
+	//echo (json_encode(array('pwMatch' => 1, 'pwLen' => 0, 'pwNum' => 0, 'pwCap' => 0, 'pwCh' => 0)));
+	echo (json_encode($retObj));
+}
+/* --- change password block end */
+
 ?>

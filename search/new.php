@@ -57,6 +57,13 @@ width: 30%;
 .glyphfav {
 font-size:1.2em;
 }
+.pwError {
+  color: red;
+  font-weight: bold;
+}
+.oldPWError::-webkit-input-placeholder {
+    color: red;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -238,6 +245,24 @@ var tour = new Tour({
       tour.start(true);
     }
     });
+    $("#chpasswd").click(function(){
+    $("#oldPw").removeClass('oldPWError');
+    $.post( "/search/engine.php", {action: '_chpasswd', o: $("#oldPw").val(), n: $("#NewPw").val(), c: $("#CNewPw").val()} ).done(function(data){
+      console.log(data);
+      data = JSON.parse(data);
+      $.each(data, function(index, item) {
+        addOrRemove = ( $('#'+index).length && item === 0 );
+        $('#'+index).toggleClass('pwError', addOrRemove);
+        if ( index === 'oldPW' && item === 0 ) {
+          $("#oldPw").val('').attr("placeholder", "Incorrect Old Password").addClass('oldPWError');
+        }
+      });
+      if ( data.pwCh === 1 ) {
+        alert('Password successfully changed!');
+        location.reload();
+      }
+    });
+    });
     $("#verify").click(function(){
     $.post( "/search/l.php", {u: $("#ver-u").val(), p: $("#ver-p").val(), r: $("#remember_me").prop('checked')} ).done(function(data){
     alert(data);
@@ -361,7 +386,23 @@ echo '</tbody></table>
 </div>
 </div>';
 echo '<div id="ChangePassword" class="tab-pane fade">
-ResetPassword
+<h4>Change Password</h4>
+<div style="float: right">
+<h4>Passwords must</h4>
+<ul>
+  <li id="pwLen">be at least 8 digits in length</li>
+  <li id="pwNum">include at least one number</li>
+  <li id="pwCap">include at least one capital letter</li>
+  <li id="pwMatch">New Password and Confirm New Password must match</li>
+</ul>
+<p>An email with your IP address will be sent to the address on your account upon password change</p>
+</div>
+<div id="logger">
+<input type="password" class="form-control" id="oldPw" placeholder="Old Password">
+<input type="password" class="form-control" id="NewPw" placeholder="New Password" style="margin-top: 10px;">
+<input type="password" class="form-control" id="CNewPw" placeholder="Confirm New Password" style="margin-top: 10px;">
+<a href="#" id="chpasswd"><span class="badge" style="background-color: #5cb85c; margin-top: 10px;">Change Password</span></a><br><br>
+</div>
 </div>';
 echo '</div>';
 echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a></div>';
