@@ -4,7 +4,7 @@ require('password.php');
 
 /* --- logged in? */
 function loggedIN() {
-return ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 9 );
+return ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 10 );
 }
 /* -- logged in? ends */
 
@@ -47,6 +47,17 @@ if ( loggedIN() ) {
 }
 /* --- return favourite function ends */
 
+/* --- return price function */
+function priceReturn($a, $b, &$c) {
+if ( loggedIN() ) {
+	$sql = "SELECT STORED_PRICE FROM prices where PRICING_REF = '".$_SESSION['logged_in']['DISC_REF']."' and STOCK_CODE = '$b';";
+	$result = @mysqli_query($a, $sql);
+	$row = @mysqli_fetch_assoc($result);
+	$c = ( @mysqli_num_rows($result) > 0 ) ? $row['STORED_PRICE'] : $c;
+}
+}
+/* --- return price function ends */
+
 /* --- log out function */
 if ( @$_GET['action'] == '_lo' ) {
 echo 'You are now logged out.';
@@ -86,6 +97,9 @@ echo ( @$_SESSION['logged_in']['REF'] !== '' && @$_SESSION['logged_in']['UUID'] 
 		</thead>
 		<tbody>';
 		foreach ( $z as $x ) {
+		if ( @$_SESSION['logged_in']['DISC_REF'] != '' ) {
+			priceReturn($conn,$x[2],$x[$p]);
+		}
 		$ordered_qty = ( @array_key_exists($x[2], $_SESSION['order_items']) ) ? $_SESSION['order_items'][$x[2]] : 0;
 			$output.= '<tr><td align="center"><img src="http://www.mylesbros.co.uk/search/images/th_'.strtolower($x[2]).'.jpg"></td><td align="center"><strong>'.$x[2].'</strong><br><br><img width="100" onerror="this.style.display = \'none\';" alt="Barcoded value '.$x[7].'" src="http://bwipjs-api.metafloor.com/?bcid=ean13&text='.$x[7].'&includetext"></td><td>'.$x[3].'<br><br>Barcode: '.$x[7].'</td><td><input type="number" class="aSpinEdit form-control form-control-inline" id="spinner-'.$x[2].'" value="'.$ordered_qty.'" min="0" data-sku="'.$x[2].'"></td><td>&pound;'.$x[$p].'</td><td>'.$x[6].'</td>';
 			$output .= ( is_array(@$_SESSION['logged_in']) ) ? '<td><span id="'.$x[2].'" class="glyphicon '.favReturn($conn, $x[2]).' glyphlink glyphfav"></span></td></tr>' : '</tr>';
