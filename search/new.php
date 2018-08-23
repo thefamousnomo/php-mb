@@ -3,6 +3,7 @@ date_default_timezone_set('Europe/London');
 session_start();
 require_once('rm.php');
 $basket_qty = @count($_SESSION['order_items']);
+$admin = @$_SESSION['logged_in']['ADMIN'] == 1;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +49,7 @@ color: #3498db;
 .jumbosmallmargin{
 margin-bottom: 20px;
 }
-#logger {
+#logger, #passwd {
 width: 30%;
 }
 #logger *{
@@ -364,8 +365,9 @@ WELCOME;
 echo '<ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#MyAccount">My Account</a></li>
   <li><a id="acc_fav" href="#">Favourite Products</a></li>
-  <li><a data-toggle="tab" href="#ChangePassword">Change Password</a></li>
-</ul>
+  <li><a data-toggle="tab" href="#ChangePassword">Change Password</a></li>';
+if ( $admin ) echo '  <li class="pull-right"><a data-toggle="tab" href="#Admin">Admin Tools</a></li>';
+echo '</ul>
 <br>
 <div class="tab-content">
 <div id="MyAccount" class="tab-pane fade in active">';
@@ -397,12 +399,16 @@ echo '<div id="ChangePassword" class="tab-pane fade">
 </ul>
 <p>An email with your IP address will be sent to the address on your account upon password change</p>
 </div>
-<div id="logger">
+<div id="passwd">
 <input type="password" class="form-control" id="oldPw" placeholder="Old Password">
 <input type="password" class="form-control" id="NewPw" placeholder="New Password" style="margin-top: 10px;">
 <input type="password" class="form-control" id="CNewPw" placeholder="Confirm New Password" style="margin-top: 10px;">
 <a href="#" id="chpasswd"><span class="badge" style="background-color: #5cb85c; margin-top: 10px;">Change Password</span></a><br><br>
 </div>
+</div>';
+if ( $admin) echo '<div id="Admin" class="tab-pane fade">
+<h4>Admin Tools</h4>
+Admin tools will go here!
 </div>';
 echo '</div>';
 echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a></div>';
