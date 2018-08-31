@@ -483,7 +483,7 @@ if ( $_POST['action'] == '_chpasswd' && loggedIN() ) {
 if ( $_POST['action'] == '__reset' && loggedIN() ) {
 	if ( ! $admin ) exit;
 	$conn = @mysqlConnObj();
-	$sql = mysqli_prepare($conn, "UPDATE users_bak set PW = '' where account_ref = (?)");
+	$sql = mysqli_prepare($conn, "UPDATE users set PW = '' where account_ref = (?)");
 	mysqli_stmt_bind_param($sql, 's', $user);
 	$user = strtoupper($_POST['user']);
 	$result = mysqli_stmt_execute($sql);
