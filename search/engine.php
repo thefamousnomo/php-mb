@@ -8,6 +8,10 @@ return ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 
 }
 /* -- logged in? ends */
 
+/* --- admin? */
+$admin = @$_SESSION['logged_in']['ADMIN'] == 1;
+/* --- admin? ends */
+
 /* --- mysql conn obj */
 function mysqlConnObj() {
 if ( loggedIN() ) {
@@ -475,4 +479,17 @@ if ( $_POST['action'] == '_chpasswd' && loggedIN() ) {
 }
 /* --- change password block end */
 
+/* --- admin functions */
+if ( $_POST['action'] == '__reset' && loggedIN() ) {
+	if ( ! $admin ) exit;
+	$conn = @mysqlConnObj();
+	$sql = mysqli_prepare($conn, "UPDATE users_bak set PW = '' where account_ref = (?)");
+	mysqli_stmt_bind_param($sql, 's', $user);
+	$user = strtoupper($_POST['user']);
+	$result = mysqli_stmt_execute($sql);
+	mysqli_stmt_close($sql);
+	mysqli_close($conn);
+	echo $result;
+}
+/* --- admin functions end */
 ?>

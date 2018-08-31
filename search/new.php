@@ -49,7 +49,7 @@ color: #3498db;
 .jumbosmallmargin{
 margin-bottom: 20px;
 }
-#logger, #passwd {
+#logger, #passwd, #user {
 width: 30%;
 }
 #logger *{
@@ -264,6 +264,17 @@ var tour = new Tour({
       }
     });
     });
+    $("#resetpw").click(function(){
+      if ($("#user").val() == '') {
+        alert('Please fill in Account Ref');
+        return;
+      }
+      $.post( "/search/engine.php", {action: '__reset', user: $("#user").val()} ).done(function(data){
+        console.log(data);
+        if ( data == 1 ) alert('Password successfully cleared (if account exists!)\n\nPlease issue new password, or customer can do this themselves!');
+        $("#user").val('');
+      });
+    });
     $("#verify").click(function(){
     $.post( "/search/l.php", {u: $("#ver-u").val(), p: $("#ver-p").val(), r: $("#remember_me").prop('checked')} ).done(function(data){
     alert(data);
@@ -408,7 +419,9 @@ echo '<div id="ChangePassword" class="tab-pane fade">
 </div>';
 if ( $admin) echo '<div id="Admin" class="tab-pane fade">
 <h4>Admin Tools</h4>
-Admin tools will go here!
+<h5>Account Ref password reset</h5>
+<input type="text" class="form-control" id="user" placeholder="Account Ref to reset">
+<a href="#" id="resetpw"><span class="badge" style="background-color: #5cb85c; margin-top: 10px;">Reset Password</span></a><br><br>
 </div>';
 echo '</div>';
 echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a></div>';
