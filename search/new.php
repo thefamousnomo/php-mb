@@ -65,6 +65,15 @@ font-size:1.2em;
 .oldPWError::-webkit-input-placeholder {
     color: red;
 }
+.sticky {
+  background-color: #3498db;
+  padding: 2px 0px;
+  position: fixed;
+  top: 0;
+}
+.stickyfox {
+  width: 100%;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -317,6 +326,19 @@ var tour = new Tour({
     e.preventDefault();
     ajaxSend(this, '_startNewOrder', 2);
     });
+    function getStuck() {
+      var fox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+      if ( window.pageYOffset > sticky ) {
+        header.classList.add("sticky");
+        if ( fox ) header.classList.add("stickyfox");
+      } else {
+        header.classList.remove("sticky");
+        header.classList.remove("stickyfox");
+      }
+    }
+    window.onscroll = function() {getStuck()};
+    var header = document.getElementById("stick");
+    var sticky = header.offsetTop;
 });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
@@ -328,7 +350,7 @@ $("#searchButton").removeClass('btn-warning');
 <div class="jumbotron text-center jumbosmallmargin">
   <h1>Myles Bros Ltd</h1>
   <p>Wholesale Hardware Factors</p><br>
-<div class="row rowNoMargin">
+<div class="row rowNoMargin" id="stick">
   <div class="col-sm-6 col-sm-offset-3">
     <div class="input-group">
       <input type="text" class="form-control" aria-label="..." placeholder="search our database" id="searchText">
