@@ -404,7 +404,7 @@ savedOrderToSession();
 }
 	if ( mail('orders@mylesbros.co.uk', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
 		unset($_SESSION['order_items']);
-		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3>'));
+		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3><p>Please note that due to price changes throughout the day, prices may slightly increase / reduce when processed.</p>'));
 		} else	{
 			echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'));
 				}
