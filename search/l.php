@@ -59,7 +59,7 @@ if ($conn->connect_error)
       }
       $sql = "UPDATE users SET last_login = null WHERE account_ref = '".$hash['ACCOUNT_REF']."';";
       $conn->query($sql);
-			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 0;"; // see also engine.php
+			$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$hash['ACCOUNT_REF']."' and status = 2;"; // see also engine.php
 			$result = $conn->query($sql);
 			while ($row = mysqli_fetch_assoc($result)) {
 			$_SESSION['saved_orders'][] = $row;

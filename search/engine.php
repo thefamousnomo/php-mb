@@ -32,7 +32,7 @@ exit;
 function savedOrderToSession() {
 unset($_SESSION['saved_orders']);
 $conn = mysqlConnObj();
-$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 0;"; // see also l.php 45
+$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 2;"; // see also l.php 45
 $result = $conn->query($sql);
 while ($row = mysqli_fetch_assoc($result)) {
 	$_SESSION['saved_orders'][] = $row;
@@ -155,7 +155,7 @@ $i++;
 }
 $resultL = @mysqli_query($conn, $sql);
 echo ( $resultH && $resultL );
-$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 0;"; // see also l.php
+$sql = "SELECT order_date, ref, order_lines, uuid from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 2;"; // see also l.php
 $result = $conn->query($sql);
 while ($row = mysqli_fetch_assoc($result)) {
 $_SESSION['saved_orders'][] = $row;
@@ -395,7 +395,7 @@ fclose($file);
 	}
 if ( LoggedIN() ) {
 $conn = @mysqlConnObj();
-$sql = "UPDATE downstreamHeaders set status = 2 where uuid = '".$_SESSION['logged_in']['UUID']."';";
+$sql = "UPDATE downstreamHeaders set status = 1 where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
 $result = @mysqli_query($conn, $sql);
 mysqli_close($conn);
 $_SESSION['logged_in']['REF'] = '';
