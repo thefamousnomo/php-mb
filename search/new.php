@@ -229,7 +229,7 @@ var tour = new Tour({
     	$('#badge').click();
     });
     $('#resultsDiv').on('click', '#save', function(e){
-        e.preventDefault();
+      e.preventDefault();
     	console.log('saved');
     	ajaxSend($(this), '_save', 2);
     });

@@ -395,8 +395,38 @@ fclose($file);
 	}
 if ( LoggedIN() ) {
 $conn = @mysqlConnObj();
-$sql = "UPDATE downstreamHeaders set status = 1 where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
-$result = @mysqli_query($conn, $sql);
+if ( ! empty($_SESSION['logged_in']['UUID']) ) {
+	$uuid = $_SESSION['logged_in']['UUID'];
+	$sql = "DELETE FROM downstreamLines where uuid = '".$uuid."';";
+	$result = @mysqli_query($conn, $sql);
+	$sql = "INSERT INTO downstreamLines (customer, uuid, qty, code) VALUES ";
+	$i = 1;
+	foreach ( $_SESSION['order_items'] as $k => $v ) {
+		$sql .= "('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$uuid."', $v, '".$k."')";
+		$sql .= ( $i == count($_SESSION['order_items']) ) ? ';' : ', ';
+		$i++;
+	}
+	$result = @mysqli_query($conn, $sql);
+	$sql = "UPDATE downstreamHeaders set status = 0, ref = '".$_GET['order_number']."', order_lines = '".count($_SESSION['order_items'])."' where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
+	$result = @mysqli_query($conn, $sql);
+} else {
+	$uuid = $_SESSION['logged_in']['ACCOUNT_REF'].date('Ymdhis');
+	$ref = $uuid;
+	$sql = "INSERT INTO downstreamLines (customer, uuid, qty, code) VALUES ";
+	$i = 1;
+	foreach ( $_SESSION['order_items'] as $k => $v ) {
+		$sql .= "('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$uuid."', $v, '".$k."')";
+		$sql .= ( $i == count($_SESSION['order_items']) ) ? ';' : ', ';
+		$i++;
+	}
+	$resultL = @mysqli_query($conn, $sql);
+	if ( $resultL ) {
+		$sql = "INSERT INTO downstreamHeaders (uuid, customer, ref, status, order_lines) VALUES ('".$uuid."', '".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$ref."', 0, '".count($_SESSION['order_items'])."'); ";
+		$resultH = @mysqli_query($conn, $sql);
+	} else {
+		echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'));
+	}
+}
 mysqli_close($conn);
 $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
