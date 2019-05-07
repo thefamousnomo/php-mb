@@ -411,7 +411,7 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 	$result = @mysqli_query($conn, $sql);
 } else {
 	$uuid = $_SESSION['logged_in']['ACCOUNT_REF'].date('Ymdhis');
-	$ref = $uuid;
+	$ref = $_GET['order_number'] ?: $uuid;
 	$sql = "INSERT INTO downstreamLines (customer, uuid, qty, code) VALUES ";
 	$i = 1;
 	foreach ( $_SESSION['order_items'] as $k => $v ) {
