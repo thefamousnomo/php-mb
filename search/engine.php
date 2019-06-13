@@ -389,6 +389,7 @@ fclose($file);
 	$email .= 'Email: ' . $_GET['email']."\r\n\r\n";
 	$email .= 'Order Number: ' . $_GET['order_number']."\r\n\r\n";
 	$email .= 'Special Instructions: ' . $_GET['special_instructions']."\r\n\r\n";
+	$email .= 'Logged In: ' . ( ( LoggedIn() ) ? 'Yes' : 'No' )."\r\n\r\n";	
 	$email .= "Order details below: \r\n\r\n";
 	foreach ( $_SESSION['order_items'] as $key => $value ) {
 	$email .= $key.' - '.$list[$key]." x $value\r\n";
