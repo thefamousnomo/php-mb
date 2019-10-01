@@ -444,7 +444,7 @@ exit;
 /* --- order block end */
 
 /* --- change password block begins */
-if ( $_POST['action'] == '_chpasswd' && loggedIN() ) {
+if ( @$_POST['action'] == '_chpasswd' && loggedIN() ) {
 	function checkOldPassword($oldPw, &$retObj) {
 			$conn = @mysqlConnObj();
 			$id = $_SESSION['logged_in']['ACCOUNT_REF'];
@@ -511,7 +511,7 @@ if ( $_POST['action'] == '_chpasswd' && loggedIN() ) {
 /* --- change password block end */
 
 /* --- admin functions */
-if ( $_POST['action'] == '__reset' && loggedIN() ) {
+if ( @$_POST['action'] == '__reset' && loggedIN() ) {
 	if ( ! $admin ) exit;
 	$conn = @mysqlConnObj();
 	$sql = mysqli_prepare($conn, "UPDATE users set PW = '' where account_ref = (?)");
@@ -521,6 +521,19 @@ if ( $_POST['action'] == '__reset' && loggedIN() ) {
 	mysqli_stmt_close($sql);
 	mysqli_close($conn);
 	echo $result;
+}
+if ( @$_GET['action'] == '__customers' && loggedIN() ) {
+	if ( ! $admin ) exit;
+	$conn = @mysqlConnObj();
+	$sql = "SELECT ACCOUNT_REF FROM users WHERE pw <> ''";
+	$result = @mysqli_query($conn, $sql);
+	while ( $row = mysqli_fetch_row($result) ) {
+		$rows[] = $row[0];
+	}
+	header('Content-Type: application/json');
+	echo json_encode($rows);
+	mysqli_close($conn);
+	exit;
 }
 /* --- admin functions end */
 ?>

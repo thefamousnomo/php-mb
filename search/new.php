@@ -18,6 +18,7 @@ $admin = @$_SESSION['logged_in']['ADMIN'] == 1;
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="search/js/bootstrap.min.js"></script>
   <script src="search/js/bootstrap-tour.min.js"></script>
+  <script src="search/js/typeahead.js"></script>
 <style>
 // * { border: 1px solid black; }
 .jumbotron {
@@ -74,9 +75,43 @@ font-size:1.2em;
 .stickyfox {
   width: 100%;
 }
+.tt-menu {
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+.tt-suggestion {
+  padding: 6px 12px;
+}
+.tt-selectable:hover{
+  cursor: pointer;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
+
+//typeahead>>
+function typeaheadOn() {
+
+  // Constructing the suggestion engine
+  var customers = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: 'search/engine.php?action=__customers'
+  });
+
+  // Initializing the typeahead
+  $('.typeahead').typeahead({
+      hint: true,
+      highlight: true, /* Enable substring highlighting */
+      minLength: 1 /* Specify minimum characters required for showing suggestions */
+  },
+  {
+      name: 'customers',
+      source: customers
+  });
+
+}
+//typeahead<<
 
 var tour = new Tour({
   steps: [
@@ -339,7 +374,14 @@ var tour = new Tour({
     window.onscroll = function() {getStuck()};
     var header = document.getElementById("stick");
     var sticky = header.offsetTop;
-});
+    $('#ad').click(function() {
+    typeaheadOn();
+    $("#emulateuser").click(function(e){
+    e.preventDefault();
+    alert($('#emulate').val());
+    });    
+})
+  });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
 });
@@ -399,7 +441,7 @@ echo '<ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#MyAccount">My Account</a></li>
   <li><a id="acc_fav" href="#">Favourite Products</a></li>
   <li><a data-toggle="tab" href="#ChangePassword">Change Password</a></li>';
-if ( $admin ) echo '  <li class="pull-right"><a data-toggle="tab" href="#Admin">Admin Tools</a></li>';
+if ( $admin ) echo '  <li class="pull-right"><a data-toggle="tab" href="#Admin" id="ad">Admin Tools</a></li>';
 echo '</ul>
 <br>
 <div class="tab-content">
@@ -440,10 +482,16 @@ echo '<div id="ChangePassword" class="tab-pane fade">
 </div>
 </div>';
 if ( $admin) echo '<div id="Admin" class="tab-pane fade">
-<h4>Admin Tools</h4>
-<h5>Account Ref password reset</h5>
+<h4>Admin Tools</h4><br>
+<div>
+<h5>Password Reset</h5>
 <input type="text" class="form-control" id="user" placeholder="Account Ref to reset">
 <a href="#" id="resetpw"><span class="badge" style="background-color: #5cb85c; margin-top: 10px;">Reset Password</span></a><br><br>
+</div>
+<div>
+<h5>Emulate Account</h5>
+<input type="text" class="form-control typeahead" id="emulate" placeholder="Account Ref to emulate">&nbsp;
+<a href="#" id="emulateuser"><span class="badge" style="background-color: #5cb85c; margin-top: 10px;">Emulate</span></a><br><br>
 </div>';
 echo '</div>';
 echo '<a href="#" id="log-out"><span class="badge" style="background-color: #3498db; margin-top: 10px;">Log out</span></a></div>';
@@ -467,10 +515,10 @@ echo '<a href="#" id="log-out"><span class="badge" style="background-color: #349
 </div>
 <hr style="clear: both;">
 <?php
-//echo '<pre>';
-//print_r($_COOKIE);
-//print_r($_SESSION);
-//echo '</pre>';
+echo '<pre>';
+print_r($_COOKIE);
+print_r($_SESSION);
+echo '</pre>';
 ?>
 </body>
 </html>
