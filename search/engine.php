@@ -522,6 +522,21 @@ if ( @$_POST['action'] == '__reset' && loggedIN() ) {
 	mysqli_close($conn);
 	echo $result;
 }
+if ( @$_POST['action'] == '__emulate' && loggedIN() ) {
+	if ( ! $admin ) exit;
+	$conn = @mysqlConnObj();
+	$id = $_POST['user'];
+	$sql = "SELECT * FROM users where account_ref = '$id';";
+	$result = mysqli_query($conn, $sql);
+	$row = mysqli_fetch_assoc($result);	
+	mysqli_close($conn);
+	//$_SESSION['real'] = $_SESSION['logged_in']['ACCOUNT_REF'];
+	$_SESSION['logged_in']['ACCOUNT_REF'] = $row['ACCOUNT_REF'];
+	$_SESSION['logged_in']['NAME'] = $row['NAME'];
+	$_SESSION['logged_in']['E_MAIL'] = $row['E_MAIL'];
+	$_SESSION['logged_in']['DISC_REF'] = $row['DISC_REF'];
+	echo $row['ACCOUNT_REF'];
+}
 if ( @$_GET['action'] == '__customers' && loggedIN() ) {
 	if ( ! $admin ) exit;
 	$conn = @mysqlConnObj();

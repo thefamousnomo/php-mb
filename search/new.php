@@ -378,10 +378,13 @@ var tour = new Tour({
     typeaheadOn();
     $("#emulateuser").click(function(e){
     e.preventDefault();
-    alert($('#emulate').val());
+    $.post( "/search/engine.php", {action: '__emulate', user: $("#emulate").val()} ).done(function(data){
+    alert('Now emulating ' + data);
+    location.reload();
+    });
     });    
-})
-  });
+    });
+});
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
 });
@@ -515,10 +518,10 @@ echo '<a href="#" id="log-out"><span class="badge" style="background-color: #349
 </div>
 <hr style="clear: both;">
 <?php
-echo '<pre>';
+/*echo '<pre>';
 print_r($_COOKIE);
 print_r($_SESSION);
-echo '</pre>';
+echo '</pre>';*/
 ?>
 </body>
 </html>
