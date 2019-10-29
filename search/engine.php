@@ -112,7 +112,7 @@ echo ( @$_SESSION['logged_in']['REF'] !== '' && @$_SESSION['logged_in']['UUID'] 
 			$totalQty+=$ordered_qty;
 			$totalPrice+=$ordered_qty * $x[$p];
 		}
-		if ( $head == 'Your Order' ) $output.='<tr style="font-weight: bold;"><td colspan="3">Total</td><td>'.$totalQty.'</td><td colspan="3">&pound;'.$totalPrice.'</td></tr>';
+		if ( $head == 'Your Order' ) $output.='<tr style="font-weight: bold;"><td colspan="3">Total</td><td>'.$totalQty.'</td><td colspan="3">&pound;'.number_format($totalPrice,2,'.','').'</td></tr>';
 		$output.='</tbody></table></div>';
 		if ( @$_GET['aon'] == 1 && $qCount > 1 ) $output.='<br<br><a href="#" style="float: right;" data-aon="0" id="showAll">show all</a>';
 		return $output;
