@@ -270,11 +270,10 @@ var tour = new Tour({
     });
     $('#resultsDiv').on('click', '#orderSubmit', function(){
     if ( ! <?php echo ( is_array(@$_SESSION['logged_in']) && count(@$_SESSION['logged_in']) == 10 ) ? 'true' : 'false' ?> ) {
-      if ( confirm('Would you like to log in before submitting your order?') ) {
+        alert('Please log in before submitting your order!')
         $("html, body").animate({ scrollTop: 0 }, "slow");
         $("#login").click();
         return false;
-      }
     }
     if ( $('#shopname').val() && $('#emailaddress').val() ) {
     	$('#orderSubmit').addClass('btn-warning');
