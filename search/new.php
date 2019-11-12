@@ -174,9 +174,15 @@ var tour = new Tour({
   }
 ]});
 
+  $("#SOButton").click(function(){
+    $("#filter").data("field", 3);
+    $("#searchText").val("*SO*");
+    $("#searchButton").click();  
+  });
 	$("li > a[id^=filter-]").click(function(){
 		if ( this.id == 'filter-specialoffers' ) {
     //$("#filter").data("field", 3).text("Special Offers");
+    $("#filter").data("field", 3);
 		$("#searchText").val("*SO*");
 		$("#searchButton").click();
     //$("#searchText").val("");
@@ -419,7 +425,8 @@ $("#searchButton").removeClass('btn-warning');
     </div><!-- /input-group -->
   </div><!-- /.col-sm-6 col-sm-offset-3 -->
 </div>
-<br><button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
+<br><button type="button" class="btn btn-lg btn-success" id="SOButton" data-aon="1">Special Offers</button>
+<button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
 </div>
 <div class="container">
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
