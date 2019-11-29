@@ -425,7 +425,7 @@ $("#searchButton").removeClass('btn-warning');
     </div><!-- /input-group -->
   </div><!-- /.col-sm-6 col-sm-offset-3 -->
 </div>
-<br><button type="button" class="btn btn-lg btn-success" id="SOButton" data-aon="1">Special Offers</button>
+<br><!--<button type="button" class="btn btn-lg btn-success" id="SOButton" data-aon="1">Special Offers</button>-->
 <button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
 </div>
 <div class="container">
