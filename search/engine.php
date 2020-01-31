@@ -413,7 +413,7 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 		$i++;
 	}
 	$result = @mysqli_query($conn, $sql);
-	$sql = "UPDATE downstreamHeaders set status = 0, ref = '".$_GET['order_number']."', order_lines = '".count($_SESSION['order_items'])."' where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
+	$sql = "UPDATE downstreamHeaders set order_date = null, status = 0, ref = '".$_GET['order_number']."', order_lines = '".count($_SESSION['order_items'])."' where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
 	$result = @mysqli_query($conn, $sql);
 } else {
 	$uuid = $_SESSION['logged_in']['ACCOUNT_REF'].date('Ymdhis');
