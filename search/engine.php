@@ -540,6 +540,7 @@ if ( @$_POST['action'] == '__emulate' && loggedIN() ) {
 	$_SESSION['logged_in']['NAME'] = $row['NAME'];
 	$_SESSION['logged_in']['E_MAIL'] = $row['E_MAIL'];
 	$_SESSION['logged_in']['DISC_REF'] = $row['DISC_REF'];
+	savedOrderToSession();
 	echo $row['ACCOUNT_REF'];
 }
 if ( @$_GET['action'] == '__customers' && loggedIN() ) {
