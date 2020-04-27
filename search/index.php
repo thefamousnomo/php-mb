@@ -253,7 +253,7 @@ $("#searchButton").removeClass('btn-warning');
 <div class="row">
 		<div class="col-xs-6">
 		<div>Contact</div><br>
-		<span class="glyphicon glyphicon-envelope"></span> Sandy Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Peter Myles - Director<br><span class="glyphicon glyphicon-envelope"></span> Linsey McGill - Accounts<br><br>
+		<span class="glyphicon glyphicon-envelope"></span> Sandy Myles - Director<!--<br><span class="glyphicon glyphicon-envelope"></span> Peter Myles - Director--><br><span class="glyphicon glyphicon-envelope"></span> Linsey McGill - Accounts<br><br>
 		<div><span class="glyphicon glyphicon-earphone"></span> 01506-859158<br><span class="glyphicon glyphicon-print"></span> 01506-853618</div>
         </div>
         <div class="col-xs-6 text-right">
