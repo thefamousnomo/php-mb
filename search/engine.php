@@ -247,7 +247,11 @@ function searchQuery($haystack, $needle) {
 	array_walk($needle, function(&$value, &$key){
 	$value = (strlen($value)>3) ? '/('.rtrim($value, 'S').')(S*)/' : '/('.$value.')/';
 	});
-	preg_replace($needle, '$1$2', $haystack[$g], 1, $count);
+	if ( $g == 3 ) {
+		preg_replace($needle, '$1$2', $haystack[3].' '.$haystack[8], 1, $count);
+	} else {
+		preg_replace($needle, '$1$2', $haystack[$g], 1, $count);
+	}
 	if ( $count > 0 && $count == count($needle) && $_GET['aon'] == 1 ) {
 		$haystack[] = $count;
 		$results[] = $haystack;
@@ -283,7 +287,7 @@ function removedTerms($ltt) {
 	return ( is_array($ltt) ) ? '<i>terms '.implode($ltt, ', ').' removed from search</i>' : '';
 }
 
-if ( count($results) == 0 ) {
+if ( @count($results) == 0 ) {
 echo removedTerms($ltt);
 echo "<h3>Sorry, no matches found</h3>";
 echo '<br<br><a href="#" style="float: right;" data-aon="0" id="showAll">show all</a>';

@@ -183,7 +183,7 @@ var tour = new Tour({
 		if ( this.id == 'filter-specialoffers' ) {
     //$("#filter").data("field", 3).text("Special Offers");
     $("#filter").data("field", 3);
-		$("#searchText").val("*SO*");
+		$("#searchText").val("SPECIALS");
 		$("#searchButton").click();
     //$("#searchText").val("");
 		} else {
