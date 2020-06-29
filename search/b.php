@@ -1,5 +1,5 @@
 <?
-$keys = Array("SUPP_REF", "SUPP_NAME", "STOCK_CODE", "DESCRIPTION", "SALES", "RRP", "STOCK", "BARCODE");
+$keys = Array("SUPP_REF", "SUPP_NAME", "STOCK_CODE", "DESCRIPTION", "SALES", "RRP", "STOCK", "BARCODE", "CATEGORY");
 $dbArray = file('search/pricelist.dat');
 foreach ( $dbArray as $row ) {
 $rowArray = explode(',', $row);
