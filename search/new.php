@@ -127,6 +127,16 @@ function typeaheadOn() {
 }
 //typeahead<<
 
+var featured = new Tour({
+  steps: [
+    {
+      element: "#catdd",
+      title: "Now search via category!",
+      content: "List all items in a category."
+    }
+  ]
+});
+
 var tour = new Tour({
   steps: [
   {
@@ -417,6 +427,9 @@ var tour = new Tour({
     });
     });    
     });
+featured.init(true);
+featured.start(true);
+setTimeout(() => { featured.end(true); }, 5000);
 });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
@@ -451,7 +464,7 @@ $("#searchButton").removeClass('btn-warning');
   <button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
   <button type="button" class="btn btn-lg btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
+    <span class="sr-only" id="catdd">Toggle Dropdown</span>
   </button>
   <ul class="dropdown-menu scrollable-menu">
     <h6 class="dropdown-header">Categories</h6>
