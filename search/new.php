@@ -4,6 +4,15 @@ session_start();
 require_once('rm.php');
 $basket_qty = @count($_SESSION['order_items']);
 $admin = @$_SESSION['logged_in']['ADMIN'] == 1;
+if ( empty($_SESSION['categories']) ) {
+  $file = fopen("pricelist.dat", "r");
+  while ( ! feof($file) ) {
+    $line = fgetcsv($file);
+    $catArray[] = $line[8];
+  }
+sort($catArray);
+$_SESSION['categories'] = array_values(array_unique($catArray, SORT_REGULAR));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -84,6 +93,11 @@ font-size:1.2em;
 }
 .tt-selectable:hover{
   cursor: pointer;
+}
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
 }
 </style>
 <script type="text/javascript">
@@ -191,6 +205,10 @@ var tour = new Tour({
 		}
 	$("#searchText").select();
 	});
+  $(".category").click(function(){
+    $("#searchText").val(this.text);
+    $("#searchButton").click();
+  });
 	function ajaxSend(ele, act, flag) {
 		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), order_number: $('#ordernumber').val(), special_instructions: $('#specialinstructions').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')), uuid: $(ele).data('uuid'), ref: $(ele).html(), oref: $(ele).data('ref') } ).done(function( data ) {
     		if ( flag == 1 ) {
@@ -426,7 +444,21 @@ $("#searchButton").removeClass('btn-warning');
   </div><!-- /.col-sm-6 col-sm-offset-3 -->
 </div>
 <br><!--<button type="button" class="btn btn-lg btn-success" id="SOButton" data-aon="1">Special Offers</button>-->
-<button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
+<div class="btn-group">
+  <button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
+  <button type="button" class="btn btn-lg btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu scrollable-menu">
+    <h6 class="dropdown-header">Categories</h6>
+    <?php
+    foreach($_SESSION['categories'] as $category){
+      echo '<li><a class="category" href="#">'.$category.'</a></li>';
+    }
+    ?>
+  </ul>   
+</div>
 </div>
 <div class="container">
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
