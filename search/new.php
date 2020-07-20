@@ -206,9 +206,11 @@ var tour = new Tour({
 	$("#searchText").select();
 	});
   $(".category").click(function(){
+    orig = $("#filter").data("field");
     $("#searchText").val(this.text);
     $("#filter").data("field", 8);
     $("#searchButton").click();
+    $("#filter").data("field", orig);
   });
 	function ajaxSend(ele, act, flag) {
 		 $.get( "/search/engine.php", { action: act, q: $("#searchText").val(), g: $("#filter").data("field"), aon: $(ele).data("aon"), qty: $(ele).val(), sku: $(ele).data("sku"), customer: $('#shopname').val(), email: $('#emailaddress').val(), order_number: $('#ordernumber').val(), special_instructions: $('#specialinstructions').val(), f: $(ele).attr('id'), fav: (!$(ele).hasClass('glyphicon-star')), uuid: $(ele).data('uuid'), ref: $(ele).html(), oref: $(ele).data('ref') } ).done(function( data ) {
