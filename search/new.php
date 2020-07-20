@@ -207,6 +207,7 @@ var tour = new Tour({
 	});
   $(".category").click(function(){
     $("#searchText").val(this.text);
+    $("#filter").data("field", 8);
     $("#searchButton").click();
   });
 	function ajaxSend(ele, act, flag) {
