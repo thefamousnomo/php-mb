@@ -429,7 +429,7 @@ var tour = new Tour({
     });
 featured.init(true);
 featured.start(true);
-setTimeout(() => { featured.end(true); }, 5000);
+setTimeout(function() { featured.end(true); }, 5000);
 });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
