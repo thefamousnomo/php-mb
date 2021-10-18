@@ -382,14 +382,17 @@ while ( ! feof($file) ) {
 fclose($file);
 	/*ini_set('SMTP','192.168.0.21');
 	ini_set('sendmail_from','despatch@prestigeleisure.com');
-	ini_set('smtp_port',25);
+	ini_set('smtp_port',25);*/
 	$debug[] = @$_SERVER['REQUEST_TIME'];
 	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
 	$debug[] = @$_SERVER['REMOTE_ADDR'];
 	$debug[] = @$_SERVER['REMOTE_HOST'];
+	$debug[] = @$_SERVER;
+	$debug[] = @$_SESSION;
 	$email = "----- debug block -----\r\n";
 	$email .= print_r($debug, true);
-	$email .= "----- customer details -----\r\n";
+	$email = "----- debug block ends--\r\n";
+	/*$email .= "----- customer details -----\r\n";
 	$email .= print_r($_GET, true);
 	$email .= "----- order items -----\r\n";
 	$email .= print_r($_SESSION['order_items'], true);
