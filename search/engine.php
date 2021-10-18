@@ -391,13 +391,13 @@ fclose($file);
 	$debug[] = @$_SESSION;
 	$email = "----- debug block -----\r\n";
 	$email .= print_r($debug, true);
-	$email = "----- debug block ends--\r\n";
+	$email .= "----- debug block ends--\r\n";
 	/*$email .= "----- customer details -----\r\n";
 	$email .= print_r($_GET, true);
 	$email .= "----- order items -----\r\n";
 	$email .= print_r($_SESSION['order_items'], true);
 	*/
-	$email = 'Name: ' . $_GET['customer']."\r\n";
+	$email .= 'Name: ' . $_GET['customer']."\r\n";
 	$email .= 'Email: ' . $_GET['email']."\r\n\r\n";
 	$email .= 'Order Number: ' . $_GET['order_number']."\r\n\r\n";
 	$email .= 'Special Instructions: ' . $_GET['special_instructions']."\r\n\r\n";
