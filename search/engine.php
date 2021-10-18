@@ -389,7 +389,7 @@ fclose($file);
 	$debug[] = @$_SERVER['REMOTE_HOST'];
 	$debug[] = @$_SERVER;
 	$debug[] = @$_SESSION['logged_in'];
-	$debug[] = @$_SESSION['order_items']
+	$debug[] = @$_SESSION['order_items'];
 	$email = "----- debug block -----\r\n";
 	$email .= print_r($debug, true);
 	$email .= "----- debug block ends--\r\n";
