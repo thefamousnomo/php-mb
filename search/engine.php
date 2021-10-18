@@ -388,7 +388,8 @@ fclose($file);
 	$debug[] = @$_SERVER['REMOTE_ADDR'];
 	$debug[] = @$_SERVER['REMOTE_HOST'];
 	$debug[] = @$_SERVER;
-	$debug[] = @$_SESSION;
+	$debug[] = @$_SESSION['logged_in'];
+	$debug[] = @$_SESSION['order_items']
 	$email = "----- debug block -----\r\n";
 	$email .= print_r($debug, true);
 	$email .= "----- debug block ends--\r\n";
@@ -441,6 +442,8 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 	}
 }
 mysqli_close($conn);
+$email .= $_SESSION['logged_in']['REF'];
+$email .= $_SESSION['logged_in']['UUID'];
 $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
 savedOrderToSession();
