@@ -442,8 +442,11 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 	}
 }
 mysqli_close($conn);
-$email .= $_SESSION['logged_in']['REF'];
-$email .= $_SESSION['logged_in']['UUID'];
+$email .= '\r\n'.$_SESSION['logged_in']['REF'].'\r\n';
+$email .= $_SESSION['logged_in']['UUID'].'\r\n';
+$email .= 'Result: '.$result.'\r\n';
+$email .= 'ResultL: '.$resultL.'\r\n';
+$email .= 'ResultH: '.$resultH.'\r\n';
 $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
 savedOrderToSession();
