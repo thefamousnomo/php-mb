@@ -380,27 +380,28 @@ while ( ! feof($file) ) {
 	$list[$line[2]]=$line[3];
 }
 fclose($file);
-	/*ini_set('SMTP','192.168.0.21');
+	ini_set('SMTP','192.168.0.21');
 	ini_set('sendmail_from','despatch@prestigeleisure.com');
-	ini_set('smtp_port',25);*/
+	ini_set('smtp_port',25);
+	// debug >>
 	$debug[] = @$_SERVER['REQUEST_TIME'];
 	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
 	$debug[] = @$_SERVER['REMOTE_ADDR'];
-	$debug[] = @$_SERVER['REMOTE_HOST'];
 	$debug[] = @$_SERVER;
-	$debug[] = @$_SESSION['logged_in'];
-	$debug[] = @$_SESSION['order_items'];
-	$email = "----- debug block -----\r\n";
-	$email .= print_r($debug, true);
-	$email .= "----- debug block ends--\r\n";
-	/*$email .= "----- customer details -----\r\n";
-	$email .= print_r($_GET, true);
-	$email .= "----- order items -----\r\n";
-	$email .= print_r($_SESSION['order_items'], true);
-	*/
-	$email .= 'Name: ' . $_GET['customer']."\r\n";
+	$debugout = "\r\n\r\n----- debug block -----\r\n";
+	$debugout .= print_r($debug, true);
+	$debugout .= "----- debug block ends--\r\n";
+	$debugout .= "----- GET details -----\r\n";
+	$debugout .= print_r($_GET, true);
+	$debugout .= "----- GET details ends-\r\n";
+	$debugout .= "----- SESSION items -----\r\n";
+	$debugout .= print_r($_SESSION['order_items'], true);
+	$debugout .= print_r($_SESSION['logged_in'], true);
+	$debugout .= "----- SESSION items ends-\r\n";
+	// debug <<
+	$email = 'Name: ' . $_GET['customer']."\r\n";
 	$email .= 'Email: ' . $_GET['email']."\r\n\r\n";
-	$email .= 'Order Number: ' . $_GET['order_number']."\r\n\r\n";
+	$email .= 'Order Number: ' . $_GET['order_number'] ."\r\n\r\n";
 	$email .= 'Special Instructions: ' . $_GET['special_instructions']."\r\n\r\n";
 	$email .= 'Logged In: ' . ( ( LoggedIn() ) ? 'Yes' : 'No' )."\r\n\r\n";	
 	$email .= "Order details below: \r\n\r\n";
@@ -420,9 +421,18 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 		$sql .= ( $i == count($_SESSION['order_items']) ) ? ';' : ', ';
 		$i++;
 	}
-	$result = @mysqli_query($conn, $sql);
-	$sql = "UPDATE downstreamHeaders set order_date = null, status = 0, ref = '".$_GET['order_number']."', order_lines = '".count($_SESSION['order_items'])."' where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
-	$result = @mysqli_query($conn, $sql);
+	$resultL = @mysqli_query($conn, $sql);
+	if ( $resultL ) {
+		$sql = "UPDATE downstreamHeaders set order_date = null, status = 0, ref = '".$_GET['order_number']."', order_lines = '".count($_SESSION['order_items'])."' where uuid = '".$_SESSION['logged_in']['UUID']."';"; //change to zero but must be saved first!
+		$resultH = @mysqli_query($conn, $sql);
+		if ( ! $resultH ) {
+			echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'.mysqli_error($conn))); 
+			exit;
+		}
+	} else {
+		echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'.mysqli_error($conn)));
+		exit;
+	}
 } else {
 	$uuid = $_SESSION['logged_in']['ACCOUNT_REF'].date('Ymdhis');
 	$ref = $_GET['order_number'] ?: $uuid;
@@ -437,25 +447,32 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 	if ( $resultL ) {
 		$sql = "INSERT INTO downstreamHeaders (uuid, customer, ref, status, order_lines) VALUES ('".$uuid."', '".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$ref."', 0, '".count($_SESSION['order_items'])."'); ";
 		$resultH = @mysqli_query($conn, $sql);
+		if ( ! $resultH ) {
+			echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'.mysqli_error($conn)));
+			exit;
+		}
 	} else {
-		echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'));
+		echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'.mysqli_error($conn)));
+		exit;
 	}
 }
 mysqli_close($conn);
-$email .= '\r\n'.$_SESSION['logged_in']['REF'].'\r\n';
-$email .= $_SESSION['logged_in']['UUID'].'\r\n';
-$email .= 'Result: '.$result.'\r\n';
-$email .= 'ResultL: '.$resultL.'\r\n';
-$email .= 'ResultH: '.$resultH.'\r\n';
+$debugout .= "\r\nResultL: ".$resultL."\r\n";
+$debugout .= 'ResultH: '.$resultH."\r\n";
+$debugout .= "UUID variable: ".$uuid."\r\n";
+$debugout .= 'REF variable: '.$ref."\r\n";
+$debugout .= print_r(error_get_last(),true)."\r\n";
+$debugout .= mysqli_error($conn);
+$email .= $debugout;
 $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
 savedOrderToSession();
 }
-	if ( mail('orders@mylesbros.co.uk', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
+	if ( mail('thefamousnomo@gmail.com', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
 		unset($_SESSION['order_items']);
 		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3><p>Please note that due to price changes throughout the day, prices may slightly increase / reduce when processed.</p>'));
 		} else	{
-			echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'));
+			echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'.print_r(error_get_last()['message'],true)));
 				}
 exit;
 }
