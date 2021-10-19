@@ -456,13 +456,13 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 		exit;
 	}
 }
+$debugout .= mysqli_error($conn);
 mysqli_close($conn);
 $debugout .= "\r\nResultL: ".$resultL."\r\n";
 $debugout .= 'ResultH: '.$resultH."\r\n";
 $debugout .= "UUID variable: ".$uuid."\r\n";
 $debugout .= 'REF variable: '.$ref."\r\n";
 $debugout .= print_r(error_get_last(),true)."\r\n";
-$debugout .= mysqli_error($conn);
 $email .= $debugout;
 $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
