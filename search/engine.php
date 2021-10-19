@@ -380,9 +380,9 @@ while ( ! feof($file) ) {
 	$list[$line[2]]=$line[3];
 }
 fclose($file);
-	ini_set('SMTP','192.168.0.21');
+	/*ini_set('SMTP','192.168.0.21');
 	ini_set('sendmail_from','despatch@prestigeleisure.com');
-	ini_set('smtp_port',25);
+	ini_set('smtp_port',25);*/
 	// debug >>
 	$debug[] = @$_SERVER['REQUEST_TIME'];
 	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
