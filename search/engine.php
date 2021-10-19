@@ -380,9 +380,9 @@ while ( ! feof($file) ) {
 	$list[$line[2]]=$line[3];
 }
 fclose($file);
-	/*ini_set('SMTP','192.168.0.21');
+	ini_set('SMTP','192.168.0.21');
 	ini_set('sendmail_from','despatch@prestigeleisure.com');
-	ini_set('smtp_port',25);*/
+	ini_set('smtp_port',25);
 	// debug >>
 	$debug[] = @$_SERVER['REQUEST_TIME'];
 	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
@@ -468,11 +468,12 @@ $_SESSION['logged_in']['REF'] = '';
 $_SESSION['logged_in']['UUID'] = '';
 savedOrderToSession();
 }
-	if ( mail('thefamousnomo@gmail.com', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
+	if ( mail('orders@mylesbros.co.uk', 'Myles Bros Online Order', $email, "From: info@mylesbros.co.uk", '-f info@mylesbros.co.uk') ) {
 		unset($_SESSION['order_items']);
 		echo json_encode(array('count' => 0, 'message' => '<h3>Order submitted successfully</h3><p>Please note that due to price changes throughout the day, prices may slightly increase / reduce when processed.</p>'));
 		} else	{
 			echo json_encode(array('count' => count($_SESSION['order_items']), 'message' => '<h3>Issue with order</h3>'.print_r(error_get_last()['message'],true)));
+			exit;
 				}
 exit;
 }
