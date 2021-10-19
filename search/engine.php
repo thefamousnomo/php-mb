@@ -380,9 +380,9 @@ while ( ! feof($file) ) {
 	$list[$line[2]]=$line[3];
 }
 fclose($file);
-	ini_set('SMTP','192.168.0.21');
-	ini_set('sendmail_from','despatch@prestigeleisure.com');
-	ini_set('smtp_port',25);
+	//ini_set('SMTP','192.168.0.21');
+	//ini_set('sendmail_from','despatch@prestigeleisure.com');
+	//ini_set('smtp_port',25);
 	// debug >>
 	$debug[] = @$_SERVER['REQUEST_TIME'];
 	$debug[] = @$_SERVER['HTTP_USER_AGENT'];
@@ -405,7 +405,7 @@ fclose($file);
 	$email .= 'Special Instructions: ' . $_GET['special_instructions']."\r\n\r\n";
 	$email .= 'Logged In: ' . ( ( LoggedIn() ) ? 'Yes' : 'No' )."\r\n\r\n";	
 	$email .= "Order details below: \r\n\r\n";
-	foreach ( $_SESSION['order_items'] as $key => $value ) {
+	foreach ( (array)$_SESSION['order_items'] as $key => $value ) {
 	$email .= $key.' - '.$list[$key]." x $value\r\n";
 	}
 if ( LoggedIN() ) {
@@ -416,7 +416,7 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 	$result = @mysqli_query($conn, $sql);
 	$sql = "INSERT INTO downstreamLines (customer, uuid, qty, code) VALUES ";
 	$i = 1;
-	foreach ( $_SESSION['order_items'] as $k => $v ) {
+	foreach ( (array)$_SESSION['order_items'] as $k => $v ) {
 		$sql .= "('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$uuid."', $v, '".$k."')";
 		$sql .= ( $i == count($_SESSION['order_items']) ) ? ';' : ', ';
 		$i++;
@@ -438,7 +438,7 @@ if ( ! empty($_SESSION['logged_in']['UUID']) ) {
 	$ref = $_GET['order_number'] ?: $uuid;
 	$sql = "INSERT INTO downstreamLines (customer, uuid, qty, code) VALUES ";
 	$i = 1;
-	foreach ( $_SESSION['order_items'] as $k => $v ) {
+	foreach ( (array)$_SESSION['order_items'] as $k => $v ) {
 		$sql .= "('".$_SESSION['logged_in']['ACCOUNT_REF']."', '".$uuid."', $v, '".$k."')";
 		$sql .= ( $i == count($_SESSION['order_items']) ) ? ';' : ', ';
 		$i++;
