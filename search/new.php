@@ -99,6 +99,18 @@ font-size:1.2em;
     max-height: 200px;
     overflow-x: hidden;
 }
+#SOButton{
+  background-color: red;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  padding: 5px;
+  position: fixed;
+  top: 45%;
+  right: 0;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -200,7 +212,7 @@ var tour = new Tour({
 
   $("#SOButton").click(function(){
     $("#filter").data("field", 3);
-    $("#searchText").val("*SO*");
+    $("#searchText").val("SPECIALS");
     $("#searchButton").click();  
   });
 	$("li > a[id^=filter-]").click(function(){
@@ -439,6 +451,7 @@ $("#searchButton").removeClass('btn-warning');
 <body>
 <div style="overflow-x: hidden;">
 <div class="jumbotron text-center jumbosmallmargin">
+  <span id="SOButton">Special Offers</span>
   <h1>Myles Bros Ltd</h1>
   <p>Wholesale Hardware Factors</p><br>
 <div class="row rowNoMargin" id="stick">
