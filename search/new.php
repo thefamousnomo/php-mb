@@ -210,18 +210,15 @@ var tour = new Tour({
   }
 ]});
 
-  $("#SOButton").click(function(){
-    $("#filter").data("field", 3);
-    $("#searchText").val("SPECIALS");
-    $("#searchButton").click();  
-  });
+function SOButton(e) {
+  $("#filter").data("field", 8);
+  $("#searchText").val(e);
+  $("#searchButton").click();  
+}
+
 	$("li > a[id^=filter-]").click(function(){
-		if ( this.id == 'filter-specialoffers' ) {
-    //$("#filter").data("field", 3).text("Special Offers");
-    $("#filter").data("field", 3);
-		$("#searchText").val("SPECIALS");
-		$("#searchButton").click();
-    //$("#searchText").val("");
+		if ( $(this).attr('class') == 'special-category' ) {
+    SOButton($(this).data("term"));
 		} else {
 		$("#filter").text(this.text).data("field", $(this).data("field"));
 		}
@@ -439,9 +436,9 @@ var tour = new Tour({
     });
     });    
     });
-featured.init(true);
-featured.start(true);
-setTimeout(function() { featured.end(true); }, 5000);
+//featured.init(true);
+//featured.start(true);
+//setTimeout(function() { featured.end(true); }, 5000);
 });
 $(document).ajaxStop(function () {
 $("#searchButton").removeClass('btn-warning');
@@ -451,7 +448,7 @@ $("#searchButton").removeClass('btn-warning');
 <body>
 <div style="overflow-x: hidden;">
 <div class="jumbotron text-center jumbosmallmargin">
-  <span id="SOButton">Special Offers</span>
+  <!--<span id="SOButton">Special Offers</span>-->
   <h1>Myles Bros Ltd</h1>
   <p>Wholesale Hardware Factors</p><br>
 <div class="row rowNoMargin" id="stick">
@@ -466,7 +463,9 @@ $("#searchButton").removeClass('btn-warning');
           <li><a id="filter-description" data-field="3" href="#">Description</a></li>
           <li><a id="filter-barcode" data-field="7" href="#">Barcode</a></li>
           <li role="separator" class="divider"></li>
-          <li><a id="filter-specialoffers" href="#">Special Offers</a></li>
+          <li><a class="special-category" id="filter-specialoffers" data-term="SPECIALS" href="#">Special Offers</a></li>
+          <li><a class="special-category" id="filter-clearance" data-term="CLEARANCE" href="#">Clearance</a></li>
+          <li><a class="special-category" id="filter-new" data-term="NEW" href="#">New</a></li>
         </ul>
       </div><!-- /btn-group -->
     </div><!-- /input-group -->
