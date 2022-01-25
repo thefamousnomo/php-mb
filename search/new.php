@@ -211,9 +211,11 @@ var tour = new Tour({
 ]});
 
   function SOButton(e) {
+    orig = $("#filter").data("field");  
     $("#filter").data("field", 8);
     $("#searchText").val(e);
-    $("#searchButton").click();  
+    $("#searchButton").click();
+    $("#filter").data("field", orig);    
   }
   $(".special-button").click(function(){
     SOButton($(this).data("term"));
