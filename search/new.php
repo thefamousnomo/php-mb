@@ -210,12 +210,14 @@ var tour = new Tour({
   }
 ]});
 
-function SOButton(e) {
-  $("#filter").data("field", 8);
-  $("#searchText").val(e);
-  $("#searchButton").click();  
-}
-
+  function SOButton(e) {
+    $("#filter").data("field", 8);
+    $("#searchText").val(e);
+    $("#searchButton").click();  
+  }
+  $(".special-button").click(function(){
+    SOButton($(this).data("term"));
+  });
 	$("li > a[id^=filter-]").click(function(){
 		if ( $(this).attr('class') == 'special-category' ) {
     SOButton($(this).data("term"));
@@ -472,6 +474,8 @@ $("#searchButton").removeClass('btn-warning');
   </div><!-- /.col-sm-6 col-sm-offset-3 -->
 </div>
 <br><!--<button type="button" class="btn btn-lg btn-success" id="SOButton" data-aon="1">Special Offers</button>-->
+<button type="button" class="btn btn-lg btn-warning special-button" data-term="NEW"> New Products</button>
+<button type="button" class="btn btn-lg btn-info special-button" data-term="CLEARANCE"> &nbsp;&nbsp;Clearance&nbsp;&nbsp;</button>
 <div class="btn-group">
   <button type="button" class="btn btn-lg btn-success" id="searchButton" data-aon="1"><span class="glyphicon glyphicon-search"></span> Search</button>
   <button type="button" class="btn btn-lg btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -487,6 +491,7 @@ $("#searchButton").removeClass('btn-warning');
     ?>
   </ul>   
 </div>
+<button type="button" class="btn btn-lg btn-danger special-button" data-term="SPECIALS"> Special Offers</button>
 </div>
 <div class="container">
 <div style="float: right; text-align: right;"><a id="trolley" href="#"><span id="badge" class="badge" style="background-color: #3498db;"><span id="basket_qty"><?php echo $basket_qty;?></span>&nbsp;items in trolley&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span></span></a></div>
