@@ -14,7 +14,7 @@ foreach ( $dbArray_key as $product ) {
 	echo "THE FOLLOWING IMAGE IS MISSING FROM THE LIBRARY\n\n";
 	//print_r($product);
 	echo $product['STOCK_CODE']."\n";
-	echo $product['DESCRIPTION'."\n";
+	echo $product['DESCRIPTION']."\n";
 	echo "\n\n";
 	}
 }
