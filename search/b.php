@@ -9,14 +9,14 @@ array_walk($rowArray, function(&$cell){$cell = str_replace('"', '', $cell);});
 	$dbArray_key[$rowArray['STOCK_CODE']] = $rowArray;
 	}
 }
-echo "THE FOLLOWING IMAGES IS MISSING FROM THE LIBRARY\n\n";
+echo "THE FOLLOWING IMAGES IS MISSING FROM THE LIBRARY\r\n\r\n";
 foreach ( $dbArray_key as $product ) {
 	if ( file_exists('search/images/'.strtolower($product['STOCK_CODE']).'.jpg') === false ) {
 	//echo "THE FOLLOWING IMAGE IS MISSING FROM THE LIBRARY\n\n";
 	//print_r($product);
-	echo $product['STOCK_CODE']."\n";
-	echo $product['DESCRIPTION']."\n";
-	echo "\n\n";
+	echo $product['STOCK_CODE']."\r\n";
+	echo $product['DESCRIPTION']."\r\n";
+	echo "\r\n";
 	}
 }
 ?>
