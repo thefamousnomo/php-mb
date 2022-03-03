@@ -12,8 +12,10 @@ array_walk($rowArray, function(&$cell){$cell = str_replace('"', '', $cell);});
 foreach ( $dbArray_key as $product ) {
 	if ( file_exists('search/images/'.strtolower($product['STOCK_CODE']).'.jpg') === false ) {
 	echo "THE FOLLOWING IMAGE IS MISSING FROM THE LIBRARY\n\n";
-	print_r($product);
-	echo "\n";
+	//print_r($product);
+	echo $product['STOCK_CODE']."\n";
+	echo $product['DESCRIPTION'."\n";
+	echo "\n\n";
 	}
 }
 ?>
