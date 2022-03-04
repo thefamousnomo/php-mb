@@ -80,6 +80,7 @@ font-size:1.2em;
   padding: 2px 0px;
   position: fixed;
   top: 0;
+  z-index: 100;
 }
 .stickyfox {
   width: 100%;
