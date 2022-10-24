@@ -112,6 +112,9 @@ font-size:1.2em;
   white-space: nowrap;
   writing-mode: vertical-rl;
 }
+.history{
+  display: none !important;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -418,6 +421,11 @@ var tour = new Tour({
     e.preventDefault();
     ajaxSend(this, '_startNewOrder', 2);
     });
+    $("#viewOrderHistory").click(function(e){
+    e.preventDefault();
+    ajaxSend(this, '_viewOrderHistory', 2);
+    location.reload();
+    });
     function getStuck() {
       var fox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
       if ( window.pageYOffset > sticky ) {
@@ -532,7 +540,7 @@ echo '</ul>
 <div id="MyAccount" class="tab-pane fade in active">';
 echo '<p>You have '.@count($_SESSION['saved_orders']).' saved orders</p><p>';
 echo ( $_SESSION['logged_in']['REF'] !== '' && $_SESSION['logged_in']['UUID'] !== '' ) ? 'You are currently working on order reference - '.$_SESSION['logged_in']['REF'] : 'You aren\'t currently working on any orders';
-echo '<p><a href="#" id="startNewOrder">Start New Order</a></p>';
+echo '<p><a href="#" id="startNewOrder">Start New Order</a>&nbsp;|&nbsp<a href="#" id="viewOrderHistory">View Order History</a></p>';
 echo '<div class="table-responsive"><table class="table table-hover">
 <thead>
 	<tr>
@@ -540,7 +548,8 @@ echo '<div class="table-responsive"><table class="table table-hover">
 ';
 if ( @count($_SESSION['saved_orders']) ) {
 foreach ( @$_SESSION['saved_orders'] as $order ) {
-echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="updateOrderNumber" data-uuid="'.$order['uuid'].'">'.$order['ref'].'</td><td>'.$order['order_lines'].'</td><td><a href="#"><span data-ref="'.$order['ref'].'" data-uuid="'.$order['uuid'].'" class="savedLoad glyphicon glyphicon-floppy-open glyphlink"></span></a></td><td><a href="#"><span data-uuid="'.$order['uuid'].'" class="savedDelete glyphicon glyphicon-floppy-remove glyphlink"></span></a></td></tr>';
+$savedDelete = isset($order['History']) ? 'history' : 'savedDelete';
+echo '<tr><td>'.$order['order_date'].'</td><td contenteditable="true" class="updateOrderNumber" data-uuid="'.$order['uuid'].'">'.$order['ref'].'</td><td>'.$order['order_lines'].'</td><td><a href="#"><span data-ref="'.$order['ref'].'" data-uuid="'.$order['uuid'].'" class="savedLoad glyphicon glyphicon-floppy-open glyphlink"></span></a></td><td><a href="#"><span data-uuid="'.$order['uuid'].'" class="'.$savedDelete.' glyphicon glyphicon-floppy-remove glyphlink"></span></a></td></tr>';
 }
 }
 echo '</tbody></table>

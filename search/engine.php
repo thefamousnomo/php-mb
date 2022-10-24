@@ -39,7 +39,24 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 mysqli_close($conn);
 }
-/* --- save order to session ends */
+/* --- saved order to session ends */
+
+/* --- order history to session */
+function viewOrderHistory() {
+	$conn = mysqlConnObj();
+	$sql = "SELECT order_date, ref, order_lines, uuid, TRUE as History from downstreamHeaders where customer = '".$_SESSION['logged_in']['ACCOUNT_REF']."' and status = 1;"; // see also l.php 45
+	$result = $conn->query($sql);
+	$i = 1;
+	while ($row = mysqli_fetch_assoc($result)) {
+		if ( ! in_array($row[uuid],$_SESSION['saved_orders']) ) {
+			$_SESSION['saved_orders'][$row[uuid]] = $row;
+			$_SESSION['saved_orders'][$row[uuid]][ref] .= '_'.$i;
+			$i++;
+		}
+	}
+	mysqli_close($conn);
+	}
+/* --- order history to session ends */
 
 /* --- return favourite function */
 function favReturn($a, $b) {
@@ -221,7 +238,7 @@ exit;
 if ( @$_GET['action'] == '_savedLoad' && loggedIN() && !empty($_GET['uuid']) ) {
 unset($_SESSION['order_items']);
 $conn = @mysqlConnObj();
-$sql = "SELECT code, qty from downstreamLines where uuid = '".$_GET['uuid']."';";
+$sql = "SELECT code, qty from downstreamLines where uuid = '".strtok($_GET['uuid'],'_')."';";
 $result = @mysqli_query($conn, $sql);
 while ( $row = mysqli_fetch_array($result) ) {
 $_SESSION['order_items'][$row['code']] = $row['qty'];
@@ -545,6 +562,13 @@ if ( @$_POST['action'] == '_chpasswd' && loggedIN() ) {
 	echo (json_encode($retObj));
 }
 /* --- change password block end */
+
+/* --- view order history */
+if ( @$_GET['action'] == '_viewOrderHistory' && loggedIN() ) {
+	viewOrderHistory();
+	exit;
+}
+/* --- view order history */
 
 /* --- admin functions */
 if ( @$_POST['action'] == '__reset' && loggedIN() ) {
